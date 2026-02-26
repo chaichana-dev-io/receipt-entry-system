@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบบันทึกข้อมูล - นิติบุคคล</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { background-color: #f4f7f6; font-family: 'Sarabun', sans-serif; padding: 20px; }
+        .container { max-width: 1000px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 25px rgba(0,0,0,0.1); position: relative; }
+        h2 { color: #0d6efd; font-weight: 700; margin-bottom: 30px; }
+        .receipt-badge { position: absolute; top: 30px; right: 30px; background: #28a745; color: white; padding: 10px 20px; border-radius: 10px; text-align: right; }
+        .section-title { background: #f8f9fa; padding: 10px; border-left: 5px solid #0d6efd; font-weight: bold; margin-top: 25px; margin-bottom: 15px; color: #333; }
+        .readonly-field { background-color: #e9ecef !important; font-weight: bold; color: #0d6efd; }
+        .btn-submit { padding: 15px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; border-radius: 10px; }
+        input[type=number] { text-align: right; }
+        .total-highlight { color: #0d6efd !important; border-color: #0d6efd !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="receipt-badge">
+        <small>รหัสอ้างอิงใบเสร็จ</small><br>
+        <span id="receiptNoDisplay">- รอรันเลข -</span>
+    </div>
+
+    <h2><i class="bi bi-database-add"></i> บันทึกข้อมูลตั้งต้นใบเสร็จ</h2>
+    <hr>
+    
+    <form id="receiptForm">
+        <input type="hidden" name="receiptNo" id="receiptNo">
+
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label class="form-label fw-bold">ห้อง (เลขที่)</label>
+                <input type="number" name="room" id="room" class="form-control" required oninput="getReceiptNumber()">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">ชื่อเจ้าของ / ผู้เช่า</label>
+                <input type="text" name="name" class="form-control" placeholder="ระบุชื่อ">
+            </div>
+        </div>
+
+        <div class="section-title">1. ค่าส่วนกลางและค่าน้ำประปา</div>
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <label class="form-label">ประจำเดือน</label>
+                <select name="period" class="form-select">
+                    <option value="">- เลือกเดือน -</option>
+                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                    <option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option>
+                    <option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option>
+                    <option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option>
+                    <option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option>
+                    <option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="form-label">พื้นที่ (ตรม.)</label>
+                <input type="number" step="0.01" name="sqm" id="sqm" class="form-control" placeholder="0.00" oninput="calculate()">
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="form-label text-primary">ค่าส่วนกลาง</label>
+                <input type="number" name="commonFee" id="commonFee" class="form-control readonly-field" readonly tabindex="-1">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 mb-3"><label class="form-label">เลขมิเตอร์ก่อน</label><input type="number" name="prevMeter" id="prevMeter" class="form-control" placeholder="0" oninput="calculate()"></div>
+            <div class="col-md-3 mb-3"><label class="form-label">เลขมิเตอร์ปัจจุบัน</label><input type="number" name="currMeter" id="currMeter" class="form-control" placeholder="0" oninput="calculate()"></div>
+            <div class="col-md-3 mb-3"><label class="form-label">หน่วยที่ใช้</label><input type="number" name="waterUnit" id="waterUnit" class="form-control readonly-field" readonly tabindex="-1"></div>
+            <div class="col-md-3 mb-3"><label class="form-label text-primary">ค่าน้ำ</label><input type="number" name="waterFee" id="waterFee" class="form-control readonly-field" readonly tabindex="-1"></div>
+        </div>
+
+        <div class="section-title">2. ค่าใช้จ่ายอื่นๆ และที่จอดรถ</div>
+        <div class="row">
+            <div class="col-md-2 mb-3"><label class="form-label">รักษามิเตอร์</label><input type="number" name="meter" class="form-control" placeholder="0"></div>
+            <div class="col-md-2 mb-3"><label class="form-label">จำนวนเงิน</label><input type="number" name="total_input" id="total_input" class="form-control" placeholder="0" oninput="calculate()"></div>
+            <div class="col-md-2 mb-3"><label class="form-label">รถยนต์ (คัน)</label><input type="number" name="car" id="car" class="form-control" placeholder="0" oninput="calculate()"></div>
+            <div class="col-md-2 mb-3"><label class="form-label">รวมจอดรถ</label><input type="number" name="sumCar" id="sumCar" class="form-control readonly-field" readonly tabindex="-1"></div>
+            <div class="col-md-2 mb-3"><label class="form-label">MC (คัน)</label><input type="number" name="mc" id="mc" class="form-control" placeholder="0" oninput="calculate()"></div>
+            <div class="col-md-2 mb-3"><label class="form-label">รวมจอด MC</label><input type="number" name="sumMc" id="sumMc" class="form-control readonly-field" readonly tabindex="-1"></div>
+        </div>
+        
+        <div class="row bg-light p-3 rounded mb-3">
+            <div class="col-md-2 mb-2"><label class="form-label">อื่นๆ</label><input type="number" name="other" id="other" class="form-control" placeholder="0" oninput="calculate()"></div>
+            <div class="col-md-3 mb-2">
+                <label class="form-label fw-bold text-primary">ยอดรวมสุทธิ</label>
+                <input type="number" name="grandTotal" id="grandTotal" class="form-control readonly-field total-highlight" readonly tabindex="-1">
+            </div>
+            <div class="col-md-7 mb-2">
+                <label class="form-label fw-bold">ตัวอักษรไทย</label>
+                <input type="text" name="bahtText" id="bahtText" class="form-control readonly-field" readonly tabindex="-1">
+            </div>
+        </div>
+
+        <div class="section-title">3. วิธีการชำระเงิน</div>
+        <div class="mb-3">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="payType" id="p1" value="เงินสด" checked onchange="togglePayFields()"> <label class="form-check-label" for="p1">เงินสด</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="payType" id="p2" value="เงินโอน" onchange="togglePayFields()"> <label class="form-check-label" for="p2">เงินโอน</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="payType" id="p3" value="เช็ค" onchange="togglePayFields()"> <label class="form-check-label" for="p3">เช็ค</label>
+            </div>
+        </div>
+
+        <div id="v_fields" style="display:none;" class="p-3 border rounded mb-3 bg-light">
+            <label>วันที่โอน</label><input type="date" name="transferDate" class="form-control">
+        </div>
+
+        <div id="w_fields" style="display:none;" class="p-3 border rounded mb-3 bg-light">
+            <div class="row">
+                <div class="col-md-3"><label>ธนาคาร</label><input type="text" name="bankName" class="form-control"></div>
+                <div class="col-md-3"><label>เลขที่เช็ค</label><input type="text" name="chequeNo" class="form-control"></div>
+                <div class="col-md-3"><label>ลงวันที่</label><input type="date" name="chequeDate" class="form-control"></div>
+            </div>
+        </div>
+
+        <div class="section-title text-muted">4. รายการค้างชำระ (ถ้ามี)</div>
+        <div class="row mb-2">
+            <div class="col-md-4"><label class="form-label small">ส่วนกลางค้าง (บาท)</label><input type="number" name="unpaidCommon" class="form-control" placeholder="0"></div>
+            <div class="col-md-4">
+                <label class="form-label small">เดือนที่ค้าง</label>
+                <select name="unpaidMonth" class="form-select"><option value="">-</option><option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option></select>
+            </div>
+            <div class="col-md-4"><label class="form-label small">ปีที่ค้าง (พ.ศ.)</label><input type="number" name="unpaidYear" class="form-control" placeholder="เช่น 2567"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4"><label class="form-label small">ค่าน้ำค้าง (บาท)</label><input type="number" name="unpaidWater" class="form-control" placeholder="0"></div>
+            <div class="col-md-4">
+                <label class="form-label small">เดือนที่ค้างค่าน้ำ</label>
+                <select name="unpaidWaterMonth" class="form-select"><option value="">-</option><option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option></select>
+            </div>
+            <div class="col-md-4"><label class="form-label small">ปีค่าน้ำค้าง (พ.ศ.)</label><input type="number" name="unpaidWaterYear" class="form-control" placeholder="เช่น 2567"></div>
+        </div>
+
+
+        <button type="submit" id="submitBtn" class="btn btn-primary w-100 btn-submit">บันทึกข้อมูล</button>
+    </form>
+    <div id="loader" style="display:none;" class="text-center mt-3 text-primary fw-bold">กำลังบันทึก...</div>
+</div>
+
+<script>
+    // *** สำคัญ: เปลี่ยน URL นี้เป็นตัวที่ได้จากการ Deploy ใหม่ ***
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx7HXruev3LiCvPtWsFEfVtyqUlqLfRaXaCWbD6WLKYUQI8OZHvLz9kbgzaZEMslfoWIg/exec";
+
+    function togglePayFields() {
+        const type = document.querySelector('input[name="payType"]:checked').value;
+        document.getElementById('v_fields').style.display = (type === 'เงินโอน') ? 'block' : 'none';
+        document.getElementById('w_fields').style.display = (type === 'เช็ค') ? 'block' : 'none';
+    }
+
+    function ThaiBahtText(num) {
+        if (!num || num === 0) return "";
+        num = num.toFixed(2).split('.');
+        let t1 = ["ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
+        let t2 = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"];
+        let res = "";
+        function read(n) {
+            let s = "";
+            for (let i = 0; i < n.length; i++) {
+                let d = parseInt(n[i]);
+                let p = n.length - i - 1;
+                if (d !== 0) {
+                    if (p % 6 === 1 && d === 1) s += "เอ็ด"; 
+                    else if (p % 6 === 1 && d === 2) s += "ยี่";
+                    else if (p % 6 === 0 && d === 1 && i > 0 && n.length > 1) s += "เอ็ด";
+                    else s += t1[d];
+                    s += t2[p % 6];
+                    if (p >= 6 && p % 6 === 0) s += "ล้าน";
+                }
+            }
+            return s;
+        }
+        res = (num[0] === "0") ? "ศูนย์บาท" : read(num[0]) + "บาท";
+        res += (num[1] === "00") ? "ถ้วน" : read(num[1]) + "สตางค์";
+        return res.replace("หนึ่งสิบ", "สิบ");
+    }
+
+    function calculate() {
+        const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
+        
+        const commonFee = getVal('sqm') * 25;
+        document.getElementById('commonFee').value = commonFee > 0 ? commonFee.toFixed(2) : "";
+
+        const unit = Math.max(0, getVal('currMeter') - getVal('prevMeter'));
+        const waterFee = unit * 18;
+        document.getElementById('waterUnit').value = unit > 0 ? unit : "";
+        document.getElementById('waterFee').value = waterFee > 0 ? waterFee.toFixed(2) : "";
+
+        const sumCar = getVal('car') * 500;
+        document.getElementById('sumCar').value = sumCar > 0 ? sumCar.toFixed(2) : "";
+
+        const sumMc = getVal('mc') * 100;
+        document.getElementById('sumMc').value = sumMc > 0 ? sumMc.toFixed(2) : "";
+
+        const grandTotal = commonFee + waterFee + sumCar + sumMc + getVal('total_input') + getVal('other');
+        document.getElementById('grandTotal').value = grandTotal > 0 ? grandTotal.toFixed(2) : "";
+        document.getElementById('bahtText').value = grandTotal > 0 ? ThaiBahtText(grandTotal) : "";
+    }
+
+    async function getReceiptNumber() {
+        const room = document.getElementById('room').value;
+        if (room.length >= 2) {
+            try {
+                const response = await fetch(`${WEB_APP_URL}?action=getReceiptNo&room=${room}`);
+                const resNo = await response.text();
+                document.getElementById('receiptNo').value = resNo;
+                document.getElementById('receiptNoDisplay').innerText = resNo;
+            } catch (e) {}
+        }
+    }
+
+    document.getElementById('receiptForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const { isConfirmed } = await Swal.fire({ title: 'บันทึกข้อมูล?', icon: 'question', showCancelButton: true });
+        if (!isConfirmed) return;
+
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('loader').style.display = 'block';
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        
+        // แปลงค่าว่างเป็น 0 เพื่อให้ .gs รับทศนิยมได้
+        ['commonFee','waterFee','sumCar','sumMc','grandTotal','sqm','total_input','other','unpaidCommon','unpaidWater'].forEach(k => {
+            if(!data[k]) data[k] = 0;
+        });
+
+        try {
+            const resp = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(data) });
+            const res = await resp.json();
+            if (res.result === "success") {
+                Swal.fire({ title: 'สำเร็จ!', icon: 'success', timer: 1500 });
+                e.target.reset();
+                document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
+                calculate();
+            }
+        } catch (error) {
+            Swal.fire('สำเร็จ', 'บันทึกเรียบร้อย', 'success');
+            e.target.reset();
+        } finally {
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('loader').style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>
