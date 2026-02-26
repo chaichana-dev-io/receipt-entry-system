@@ -97,7 +97,7 @@
             </div>
         </div>
 
-        <div class="section-title">3. วิธีการชำระเงิน</div>
+<div class="section-title">3. วิธีการชำระเงิน</div>
         <div class="mb-3">
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="payType" id="p1" value="เงินสด" checked onchange="togglePayFields()"> <label class="form-check-label" for="p1">เงินสด</label>
@@ -111,14 +111,34 @@
         </div>
 
         <div id="v_fields" style="display:none;" class="p-3 border rounded mb-3 bg-light">
-            <label>วันที่โอน</label><input type="date" name="transferDate" class="form-control">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <label class="fw-bold mb-0">วันที่โอน:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="date" name="transferDate" class="form-control d-inline-block" style="width: 200px;">
+                </div>
+            </div>
         </div>
 
         <div id="w_fields" style="display:none;" class="p-3 border rounded mb-3 bg-light">
             <div class="row">
-                <div class="col-md-3"><label>ธนาคาร</label><input type="text" name="bankName" class="form-control"></div>
-                <div class="col-md-3"><label>เลขที่เช็ค</label><input type="text" name="chequeNo" class="form-control"></div>
-                <div class="col-md-3"><label>ลงวันที่</label><input type="date" name="chequeDate" class="form-control"></div>
+                <div class="col-md-3 mb-2">
+                    <label class="small fw-bold">ธนาคาร</label>
+                    <input type="text" name="bankName" class="form-control" placeholder="ระบุชื่อธนาคาร">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="small fw-bold">สาขา</label>
+                    <input type="text" name="bankBranch" class="form-control" placeholder="ระบุสาขา">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="small fw-bold">เลขที่เช็ค</label>
+                    <input type="text" name="chequeNo" class="form-control" placeholder="0000000">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="small fw-bold">ลงวันที่ในเช็ค</label>
+                    <input type="date" name="chequeDate" class="form-control">
+                </div>
             </div>
         </div>
 
