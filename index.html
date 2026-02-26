@@ -97,7 +97,7 @@
             </div>
         </div>
 
-<div class="section-title">3. วิธีการชำระเงิน</div>
+        <div class="section-title">3. วิธีการชำระเงิน</div>
         <div class="mb-3">
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="payType" id="p1" value="เงินสด" checked onchange="togglePayFields()"> <label class="form-check-label" for="p1">เงินสด</label>
@@ -159,7 +159,6 @@
             </div>
             <div class="col-md-4"><label class="form-label small">ปีค่าน้ำค้าง (พ.ศ.)</label><input type="number" name="unpaidWaterYear" class="form-control" placeholder="เช่น 2567"></div>
         </div>
-
 
         <button type="submit" id="submitBtn" class="btn btn-primary w-100 btn-submit">บันทึกข้อมูล</button>
     </form>
@@ -237,6 +236,22 @@
         }
     }
 
+    // ฟังก์ชันล้างข้อมูลที่เพิ่มความสามารถในการ Reset วิธีชำระเงิน
+    function clearForm() {
+        document.getElementById('receiptForm').reset();
+        document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
+        
+        // บังคับให้ Radio กลับมาที่เงินสด
+        document.getElementById('p1').checked = true;
+        
+        // เรียกใช้ toggle เพื่อซ่อน v_fields และ w_fields
+        togglePayFields();
+        
+        // ล้างค่าฟิลด์คำนวณสีเทา
+        const fields = ['commonFee', 'waterUnit', 'waterFee', 'sumCar', 'sumMc', 'grandTotal', 'bahtText'];
+        fields.forEach(id => document.getElementById(id).value = "");
+    }
+
     document.getElementById('receiptForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const { isConfirmed } = await Swal.fire({ title: 'บันทึกข้อมูล?', icon: 'question', showCancelButton: true });
@@ -248,7 +263,6 @@
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         
-        // แปลงค่าว่างเป็น 0 เพื่อให้ .gs รับทศนิยมได้
         ['commonFee','waterFee','sumCar','sumMc','grandTotal','sqm','total_input','other','unpaidCommon','unpaidWater'].forEach(k => {
             if(!data[k]) data[k] = 0;
         });
@@ -258,13 +272,13 @@
             const res = await resp.json();
             if (res.result === "success") {
                 Swal.fire({ title: 'สำเร็จ!', icon: 'success', timer: 1500 });
-                e.target.reset();
-                document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
-                calculate();
+                
+                // ใช้ฟังก์ชันล้างข้อมูลตัวใหม่
+                clearForm();
             }
         } catch (error) {
             Swal.fire('สำเร็จ', 'บันทึกเรียบร้อย', 'success');
-            e.target.reset();
+            clearForm();
         } finally {
             document.getElementById('submitBtn').disabled = false;
             document.getElementById('loader').style.display = 'none';
