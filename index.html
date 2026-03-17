@@ -114,8 +114,9 @@
 
         <div class="section-title">3. ค่าใช้จ่ายอื่นๆ และที่จอดรถ</div>
         <div class="row">
-            <div class="col-md-2 mb-3"><label class="form-label">รักษามิเตอร์</label><input type="number" name="meter" id="meter" class="form-control" placeholder="0"></div>
-            <div class="col-md-2 mb-3"><label class="form-label">จำนวนเงิน</label><input type="number" name="total_input" id="total_input" class="form-control" placeholder="0" oninput="calculate()"></div>
+            <div class="col-md-2 mb-3"><label class="form-label">รักษามิเตอร์</label><input type="number" name="meter" id="meter" class="form-control readonly-field" placeholder="0" readonly tabindex="-1"></div>
+            <div class="col-md-2 mb-3"><label class="form-label">จำนวนเงิน</label><input type="number" name="total_input" id="total_input" class="form-control readonly-field" placeholder="0" readonly tabindex="-1"></div>
+            
             <div class="col-md-2 mb-3"><label class="form-label">รถยนต์ (คัน)</label><input type="number" name="car" id="car" class="form-control" placeholder="0" oninput="calculate()"></div>
             <div class="col-md-2 mb-3"><label class="form-label">รวมจอดรถ</label><input type="number" name="sumCar" id="sumCar" class="form-control readonly-field" readonly tabindex="-1"></div>
             <div class="col-md-2 mb-3"><label class="form-label">MC (คัน)</label><input type="number" name="mc" id="mc" class="form-control" placeholder="0" oninput="calculate()"></div>
@@ -182,7 +183,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5gaUtZKNtfsBVZxT8VD9yU6W7TzG5QFrXbKhfEM8kZINCuZTl-XrFo105jBAISVbzoQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxKvadwTlxENwe8Mo-S_kUkAXzxvnRWqsk-7LGkQniE-vlKt99aFzPQHEMPr80xMjYHVA/exec";
     const THAI_MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
 
     function togglePayFields() {
@@ -217,7 +218,6 @@
         return res.replace("หนึ่งสิบ", "สิบ");
     }
 
-    // ฟังก์ชันรันเมื่อพิมพ์เลขห้อง (ดึงรักษามิเตอร์ + ดึงข้อมูลห้อง + ดึงเลขใบเสร็จ)
     async function onRoomInput() {
         const room = document.getElementById('room').value;
         const nameInput = document.querySelector('input[name="name"]');
@@ -226,13 +226,10 @@
         const totalInput = document.getElementById('total_input');
 
         if (room.trim() !== "") {
-            // 1. ใส่ค่ารักษามิเตอร์ออโต้
             meterInput.value = "1";
             totalInput.value = "50.00";
 
-            // 2. ดึงข้อมูลห้อง (ชื่อและพื้นที่) และเลขที่ใบเสร็จพร้อมกัน
             try {
-                // เปลี่ยนเป็นแสดงสถานะกำลังโหลด
                 nameInput.placeholder = "กำลังค้นหาข้อมูล...";
                 
                 const [roomRes, receiptRes] = await Promise.all([
@@ -240,7 +237,6 @@
                     fetch(`${WEB_APP_URL}?action=getReceiptNo&room=${room}`).then(res => res.text())
                 ]);
 
-                // อัปเดตข้อมูลห้อง
                 if (roomRes.found) {
                     nameInput.value = roomRes.name;
                     sqmInput.value = roomRes.sqm;
@@ -250,16 +246,13 @@
                     sqmInput.value = "";
                 }
 
-                // อัปเดตเลขที่ใบเสร็จ
                 document.getElementById('receiptNo').value = receiptRes;
                 document.getElementById('receiptNoDisplay').innerText = receiptRes;
 
             } catch (e) {
                 nameInput.placeholder = "ระบุชื่อ";
             }
-
         } else {
-            // ถ้ายกเลิกการพิมพ์เลขห้อง ให้ล้างข้อมูลทิ้ง
             meterInput.value = "";
             totalInput.value = "";
             nameInput.value = "";
@@ -269,14 +262,12 @@
             document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
         }
         
-        // สั่งให้คำนวณยอดเงินใหม่
         calculate();
     }
 
     function calculate() {
         const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
         
-        // --- 1. คำนวณเดือนส่วนกลางอัจฉริยะ ---
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
         let monthCount = 0;
@@ -287,7 +278,6 @@
                 const idxStart = THAI_MONTHS.indexOf(startM);
                 const idxEnd = THAI_MONTHS.indexOf(endM);
                 if (idxStart !== -1 && idxEnd !== -1) {
-                    // รองรับการเลือกข้ามปี (เช่น ธันวาคม ถึง มกราคม)
                     monthCount = idxEnd >= idxStart ? (idxEnd - idxStart) + 1 : (12 - idxStart + idxEnd) + 1;
                 }
             }
@@ -297,7 +287,6 @@
         const commonFee = getVal('sqm') * 25 * monthCount;
         document.getElementById('commonFee').value = commonFee > 0 ? commonFee.toFixed(2) : "";
 
-        // --- 2. คำนวณน้ำและที่จอด ---
         const unit = Math.max(0, getVal('currMeter') - getVal('prevMeter'));
         const waterFee = unit * 18;
         document.getElementById('waterUnit').value = unit > 0 ? unit : "";
@@ -309,7 +298,6 @@
         const sumMc = getVal('mc') * 100;
         document.getElementById('sumMc').value = sumMc > 0 ? sumMc.toFixed(2) : "";
 
-        // --- 3. ยอดรวมสุทธิ ---
         const grandTotal = commonFee + waterFee + sumCar + sumMc + getVal('total_input') + getVal('other');
         document.getElementById('grandTotal').value = grandTotal > 0 ? grandTotal.toFixed(2) : "";
         document.getElementById('bahtText').value = grandTotal > 0 ? ThaiBahtText(grandTotal) : "";
@@ -327,7 +315,6 @@
     document.getElementById('receiptForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // จัดการข้อความรอบเดือนส่วนกลาง
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
         const finalPeriod = (startM && endM) ? `${startM} - ${endM}` : startM;
@@ -342,7 +329,8 @@
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         
-        ['commonFee','waterFee','sumCar','sumMc','grandTotal','sqm','total_input','other','unpaidCommon','unpaidWater'].forEach(k => {
+        // ถอดฟิลด์ยอดค้างและช่องอื่นๆ ออกจากการถูกบังคับให้เป็น 0 เพื่อให้เวลาไม่กรอกจะได้ส่งค่าว่างไปครับ
+        ['commonFee','waterFee','sumCar','sumMc','grandTotal','sqm','total_input','other'].forEach(k => {
             if(!data[k]) data[k] = 0;
         });
 
