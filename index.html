@@ -32,11 +32,12 @@
     
     <form id="receiptForm">
         <input type="hidden" name="receiptNo" id="receiptNo">
+        <input type="hidden" name="period" id="finalPeriod">
 
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label class="form-label fw-bold">ห้อง (เลขที่)</label>
-                <input type="number" name="room" id="room" class="form-control" required oninput="getReceiptNumber()">
+                <input type="number" name="room" id="room" class="form-control" required oninput="getReceiptNumber(); onRoomInput();">
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">ชื่อเจ้าของ / ผู้เช่า</label>
@@ -45,10 +46,22 @@
         </div>
 
         <div class="section-title">1. ค่าส่วนกลาง</div>
-        <div class="row">
+        <div class="row align-items-end">
             <div class="col-md-3 mb-3">
-                <label class="form-label">ประจำเดือน (ส่วนกลาง)</label>
-                <select name="period" class="form-select">
+                <label class="form-label">เดือนเริ่มต้น</label>
+                <select id="periodStart" class="form-select" onchange="calculate()">
+                    <option value="">- เลือกเดือน -</option>
+                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                    <option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option>
+                    <option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option>
+                    <option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option>
+                    <option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option>
+                    <option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-3">
+                <label class="form-label">ถึงเดือน (ไม่บังคับ)</label>
+                <select id="periodEnd" class="form-select" onchange="calculate()">
                     <option value="">- เลือกเดือน -</option>
                     <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option>
                     <option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option>
@@ -63,7 +76,7 @@
                 <input type="number" step="0.01" name="sqm" id="sqm" class="form-control" placeholder="0.00" oninput="calculate()">
             </div>
             <div class="col-md-3 mb-3">
-                <label class="form-label text-primary font-weight-bold">ค่าส่วนกลาง</label>
+                <label class="form-label text-primary font-weight-bold">ค่าส่วนกลาง <span id="monthCountBadge" class="badge bg-secondary ms-1">0 เดือน</span></label>
                 <input type="number" name="commonFee" id="commonFee" class="form-control readonly-field" readonly tabindex="-1">
             </div>
         </div>
@@ -74,12 +87,7 @@
                 <label class="form-label fw-bold small">ค่าน้ำประจำเดือน</label>
                 <select name="waterMonth" id="waterMonth" class="form-select">
                     <option value="">- เลือกเดือน -</option>
-                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option>
-                    <option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option>
-                    <option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option>
-                    <option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option>
-                    <option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option>
-                    <option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
+                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
@@ -106,7 +114,7 @@
 
         <div class="section-title">3. ค่าใช้จ่ายอื่นๆ และที่จอดรถ</div>
         <div class="row">
-            <div class="col-md-2 mb-3"><label class="form-label">รักษามิเตอร์</label><input type="number" name="meter" class="form-control" placeholder="0"></div>
+            <div class="col-md-2 mb-3"><label class="form-label">รักษามิเตอร์</label><input type="number" name="meter" id="meter" class="form-control" placeholder="0"></div>
             <div class="col-md-2 mb-3"><label class="form-label">จำนวนเงิน</label><input type="number" name="total_input" id="total_input" class="form-control" placeholder="0" oninput="calculate()"></div>
             <div class="col-md-2 mb-3"><label class="form-label">รถยนต์ (คัน)</label><input type="number" name="car" id="car" class="form-control" placeholder="0" oninput="calculate()"></div>
             <div class="col-md-2 mb-3"><label class="form-label">รวมจอดรถ</label><input type="number" name="sumCar" id="sumCar" class="form-control readonly-field" readonly tabindex="-1"></div>
@@ -115,14 +123,15 @@
         </div>
         
         <div class="row bg-light p-3 rounded mb-3">
-            <div class="col-md-2 mb-2"><label class="form-label">อื่นๆ</label><input type="number" name="other" id="other" class="form-control" placeholder="0" oninput="calculate()"></div>
-            <div class="col-md-3 mb-2">
+            <div class="col-md-4 mb-2"><label class="form-label fw-bold text-danger">เหตุผล (ถ้ามี)</label><input type="text" name="reason" id="reason" class="form-control" placeholder="ระบุเหตุผล..."></div>
+            <div class="col-md-2 mb-2"><label class="form-label">อื่นๆ (บาท)</label><input type="number" name="other" id="other" class="form-control" placeholder="0" oninput="calculate()"></div>
+            <div class="col-md-6 mb-2">
                 <label class="form-label fw-bold text-primary">ยอดรวมสุทธิ</label>
                 <input type="number" name="grandTotal" id="grandTotal" class="form-control readonly-field total-highlight" readonly tabindex="-1">
             </div>
-            <div class="col-md-7 mb-2">
+            <div class="col-md-12 mt-2">
                 <label class="form-label fw-bold">ตัวอักษรไทย</label>
-                <input type="text" name="bahtText" id="bahtText" class="form-control readonly-field" readonly tabindex="-1">
+                <input type="text" name="bahtText" id="bahtText" class="form-control readonly-field text-center" readonly tabindex="-1">
             </div>
         </div>
 
@@ -141,51 +150,29 @@
 
         <div id="v_fields" style="display:none;" class="p-3 border rounded mb-3 bg-light">
             <div class="row align-items-center">
-                <div class="col-auto">
-                    <label class="fw-bold mb-0">วันที่โอน:</label>
-                </div>
-                <div class="col-auto">
-                    <input type="date" name="transferDate" class="form-control d-inline-block" style="width: 200px;">
-                </div>
+                <div class="col-auto"><label class="fw-bold mb-0">วันที่โอน:</label></div>
+                <div class="col-auto"><input type="date" name="transferDate" class="form-control d-inline-block" style="width: 200px;"></div>
             </div>
         </div>
 
         <div id="w_fields" style="display:none;" class="p-3 border rounded mb-3 bg-light">
             <div class="row">
-                <div class="col-md-3 mb-2">
-                    <label class="small fw-bold">ธนาคาร</label>
-                    <input type="text" name="bankName" class="form-control" placeholder="ระบุชื่อธนาคาร">
-                </div>
-                <div class="col-md-3 mb-2">
-                    <label class="small fw-bold">สาขา</label>
-                    <input type="text" name="bankBranch" class="form-control" placeholder="ระบุสาขา">
-                </div>
-                <div class="col-md-3 mb-2">
-                    <label class="small fw-bold">เลขที่เช็ค</label>
-                    <input type="text" name="chequeNo" class="form-control" placeholder="0000000">
-                </div>
-                <div class="col-md-3 mb-2">
-                    <label class="small fw-bold">ลงวันที่ในเช็ค</label>
-                    <input type="date" name="chequeDate" class="form-control">
-                </div>
+                <div class="col-md-3 mb-2"><label class="small fw-bold">ธนาคาร</label><input type="text" name="bankName" class="form-control" placeholder="ระบุชื่อธนาคาร"></div>
+                <div class="col-md-3 mb-2"><label class="small fw-bold">สาขา</label><input type="text" name="bankBranch" class="form-control" placeholder="ระบุสาขา"></div>
+                <div class="col-md-3 mb-2"><label class="small fw-bold">เลขที่เช็ค</label><input type="text" name="chequeNo" class="form-control" placeholder="0000000"></div>
+                <div class="col-md-3 mb-2"><label class="small fw-bold">ลงวันที่ในเช็ค</label><input type="date" name="chequeDate" class="form-control"></div>
             </div>
         </div>
 
         <div class="section-title text-muted">5. รายการค้างชำระ (ถ้ามี)</div>
         <div class="row mb-2">
             <div class="col-md-4"><label class="form-label small">ส่วนกลางค้าง (บาท)</label><input type="number" name="unpaidCommon" class="form-control" placeholder="0"></div>
-            <div class="col-md-4">
-                <label class="form-label small">เดือนที่ค้าง</label>
-                <select name="unpaidMonth" class="form-select"><option value="">-</option><option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option></select>
-            </div>
+            <div class="col-md-4"><label class="form-label small">เดือนที่ค้าง</label><select name="unpaidMonth" class="form-select"><option value="">-</option><option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option></select></div>
             <div class="col-md-4"><label class="form-label small">ปีที่ค้าง (พ.ศ.)</label><input type="number" name="unpaidYear" class="form-control" placeholder="เช่น 2567"></div>
         </div>
         <div class="row">
             <div class="col-md-4"><label class="form-label small">ค่าน้ำค้าง (บาท)</label><input type="number" name="unpaidWater" class="form-control" placeholder="0"></div>
-            <div class="col-md-4">
-                <label class="form-label small">เดือนที่ค้างค่าน้ำ</label>
-                <select name="unpaidWaterMonth" class="form-select"><option value="">-</option><option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option></select>
-            </div>
+            <div class="col-md-4"><label class="form-label small">เดือนที่ค้างค่าน้ำ</label><select name="unpaidWaterMonth" class="form-select"><option value="">-</option><option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option></select></div>
             <div class="col-md-4"><label class="form-label small">ปีค่าน้ำค้าง (พ.ศ.)</label><input type="number" name="unpaidWaterYear" class="form-control" placeholder="เช่น 2567"></div>
         </div>
 
@@ -195,7 +182,8 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxzxPt43NbPfDpXjLZqFBEExlCMTl_Ow4OUhhl-6jqxYm4BlKfEvafXV93NSqLGB2o/exec";
+    const WEB_APP_URL = "เปลี่ยน_URL_ตรงนี้_หลัง_DEPLOY";
+    const THAI_MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
 
     function togglePayFields() {
         const type = document.querySelector('input[name="payType"]:checked').value;
@@ -212,8 +200,7 @@
         function read(n) {
             let s = "";
             for (let i = 0; i < n.length; i++) {
-                let d = parseInt(n[i]);
-                let p = n.length - i - 1;
+                let d = parseInt(n[i]); let p = n.length - i - 1;
                 if (d !== 0) {
                     if (p % 6 === 1 && d === 1) s += "เอ็ด"; 
                     else if (p % 6 === 1 && d === 2) s += "ยี่";
@@ -230,12 +217,44 @@
         return res.replace("หนึ่งสิบ", "สิบ");
     }
 
+    // ฟังก์ชันใส่ค่ารักษามิเตอร์ออโต้
+    function onRoomInput() {
+        const room = document.getElementById('room').value;
+        if (room.trim() !== "") {
+            document.getElementById('meter').value = "1";
+            document.getElementById('total_input').value = "50.00";
+        } else {
+            document.getElementById('meter').value = "";
+            document.getElementById('total_input').value = "";
+        }
+        calculate();
+    }
+
     function calculate() {
         const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
         
-        const commonFee = getVal('sqm') * 25;
+        // --- 1. คำนวณเดือนส่วนกลางอัจฉริยะ ---
+        const startM = document.getElementById('periodStart').value;
+        const endM = document.getElementById('periodEnd').value;
+        let monthCount = 0;
+        
+        if (startM) {
+            monthCount = 1;
+            if (endM) {
+                const idxStart = THAI_MONTHS.indexOf(startM);
+                const idxEnd = THAI_MONTHS.indexOf(endM);
+                if (idxStart !== -1 && idxEnd !== -1) {
+                    // รองรับการเลือกข้ามปี (เช่น ธันวาคม ถึง มกราคม)
+                    monthCount = idxEnd >= idxStart ? (idxEnd - idxStart) + 1 : (12 - idxStart + idxEnd) + 1;
+                }
+            }
+        }
+        document.getElementById('monthCountBadge').innerText = `${monthCount} เดือน`;
+        
+        const commonFee = getVal('sqm') * 25 * monthCount;
         document.getElementById('commonFee').value = commonFee > 0 ? commonFee.toFixed(2) : "";
 
+        // --- 2. คำนวณน้ำและที่จอด ---
         const unit = Math.max(0, getVal('currMeter') - getVal('prevMeter'));
         const waterFee = unit * 18;
         document.getElementById('waterUnit').value = unit > 0 ? unit : "";
@@ -247,6 +266,7 @@
         const sumMc = getVal('mc') * 100;
         document.getElementById('sumMc').value = sumMc > 0 ? sumMc.toFixed(2) : "";
 
+        // --- 3. ยอดรวมสุทธิ ---
         const grandTotal = commonFee + waterFee + sumCar + sumMc + getVal('total_input') + getVal('other');
         document.getElementById('grandTotal').value = grandTotal > 0 ? grandTotal.toFixed(2) : "";
         document.getElementById('bahtText').value = grandTotal > 0 ? ThaiBahtText(grandTotal) : "";
@@ -267,22 +287,20 @@
     function clearForm() {
         document.getElementById('receiptForm').reset();
         document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
+        document.getElementById('monthCountBadge').innerText = "0 เดือน";
         document.getElementById('p1').checked = true;
         togglePayFields();
-        
-        // ล้างค่าฟิลด์คำนวณและฟิลด์ใหม่
-        const fields = ['commonFee', 'waterUnit', 'waterFee', 'sumCar', 'sumMc', 'grandTotal', 'bahtText', 'waterYear'];
-        fields.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.value = "";
-        });
-        
-        // ล้างค่า Select เดือนค่าน้ำ
-        document.getElementById('waterMonth').selectedIndex = 0;
     }
 
     document.getElementById('receiptForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // จัดการข้อความรอบเดือนส่วนกลาง
+        const startM = document.getElementById('periodStart').value;
+        const endM = document.getElementById('periodEnd').value;
+        const finalPeriod = (startM && endM) ? `${startM} - ${endM}` : startM;
+        document.getElementById('finalPeriod').value = finalPeriod;
+
         const { isConfirmed } = await Swal.fire({ title: 'บันทึกข้อมูล?', icon: 'question', showCancelButton: true });
         if (!isConfirmed) return;
 
