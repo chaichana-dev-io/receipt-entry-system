@@ -37,7 +37,7 @@
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label class="form-label fw-bold">ห้อง (เลขที่)</label>
-                <input type="number" name="room" id="room" class="form-control" required oninput="getReceiptNumber(); onRoomInput();">
+                <input type="number" name="room" id="room" class="form-control" required oninput="onRoomInput();">
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">ชื่อเจ้าของ / ผู้เช่า</label>
@@ -182,7 +182,7 @@
 </div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxeXXSZwQywn-wmwzX9vyZmQM82dDz1_uYNuHL89OAbWDCJEvK_eQQz_W5lfVHEsHofPQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5gaUtZKNtfsBVZxT8VD9yU6W7TzG5QFrXbKhfEM8kZINCuZTl-XrFo105jBAISVbzoQ/exec";
     const THAI_MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
 
     function togglePayFields() {
@@ -217,16 +217,59 @@
         return res.replace("หนึ่งสิบ", "สิบ");
     }
 
-    // ฟังก์ชันใส่ค่ารักษามิเตอร์ออโต้
-    function onRoomInput() {
+    // ฟังก์ชันรันเมื่อพิมพ์เลขห้อง (ดึงรักษามิเตอร์ + ดึงข้อมูลห้อง + ดึงเลขใบเสร็จ)
+    async function onRoomInput() {
         const room = document.getElementById('room').value;
+        const nameInput = document.querySelector('input[name="name"]');
+        const sqmInput = document.getElementById('sqm');
+        const meterInput = document.getElementById('meter');
+        const totalInput = document.getElementById('total_input');
+
         if (room.trim() !== "") {
-            document.getElementById('meter').value = "1";
-            document.getElementById('total_input').value = "50.00";
+            // 1. ใส่ค่ารักษามิเตอร์ออโต้
+            meterInput.value = "1";
+            totalInput.value = "50.00";
+
+            // 2. ดึงข้อมูลห้อง (ชื่อและพื้นที่) และเลขที่ใบเสร็จพร้อมกัน
+            try {
+                // เปลี่ยนเป็นแสดงสถานะกำลังโหลด
+                nameInput.placeholder = "กำลังค้นหาข้อมูล...";
+                
+                const [roomRes, receiptRes] = await Promise.all([
+                    fetch(`${WEB_APP_URL}?action=getRoomData&room=${room}`).then(res => res.json()),
+                    fetch(`${WEB_APP_URL}?action=getReceiptNo&room=${room}`).then(res => res.text())
+                ]);
+
+                // อัปเดตข้อมูลห้อง
+                if (roomRes.found) {
+                    nameInput.value = roomRes.name;
+                    sqmInput.value = roomRes.sqm;
+                } else {
+                    nameInput.value = "";
+                    nameInput.placeholder = "ไม่พบข้อมูล กรุณาระบุชื่อ";
+                    sqmInput.value = "";
+                }
+
+                // อัปเดตเลขที่ใบเสร็จ
+                document.getElementById('receiptNo').value = receiptRes;
+                document.getElementById('receiptNoDisplay').innerText = receiptRes;
+
+            } catch (e) {
+                nameInput.placeholder = "ระบุชื่อ";
+            }
+
         } else {
-            document.getElementById('meter').value = "";
-            document.getElementById('total_input').value = "";
+            // ถ้ายกเลิกการพิมพ์เลขห้อง ให้ล้างข้อมูลทิ้ง
+            meterInput.value = "";
+            totalInput.value = "";
+            nameInput.value = "";
+            nameInput.placeholder = "ระบุชื่อ";
+            sqmInput.value = "";
+            document.getElementById('receiptNo').value = "";
+            document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
         }
+        
+        // สั่งให้คำนวณยอดเงินใหม่
         calculate();
     }
 
@@ -272,23 +315,12 @@
         document.getElementById('bahtText').value = grandTotal > 0 ? ThaiBahtText(grandTotal) : "";
     }
 
-    async function getReceiptNumber() {
-        const room = document.getElementById('room').value;
-        if (room.length >= 2) {
-            try {
-                const response = await fetch(`${WEB_APP_URL}?action=getReceiptNo&room=${room}`);
-                const resNo = await response.text();
-                document.getElementById('receiptNo').value = resNo;
-                document.getElementById('receiptNoDisplay').innerText = resNo;
-            } catch (e) {}
-        }
-    }
-
     function clearForm() {
         document.getElementById('receiptForm').reset();
         document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
         document.getElementById('monthCountBadge').innerText = "0 เดือน";
         document.getElementById('p1').checked = true;
+        document.querySelector('input[name="name"]').placeholder = "ระบุชื่อ";
         togglePayFields();
     }
 
