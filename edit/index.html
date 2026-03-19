@@ -12,7 +12,24 @@
         body { background-color: #fff9e6; font-family: 'Sarabun', sans-serif; padding: 20px; }
         .container { max-width: 1000px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 25px rgba(0,0,0,0.1); position: relative; }
         h2 { color: #f39c12; font-weight: 700; margin-bottom: 30px; }
-        .receipt-badge { position: absolute; top: 30px; right: 30px; background: #f39c12; color: white; padding: 10px 20px; border-radius: 10px; text-align: right; }
+        
+        /* ปรับส่วนพื้นที่สีเหลืองให้กดได้เพื่อกลับหน้าหลัก */
+        .receipt-badge { 
+            position: absolute; 
+            top: 30px; 
+            right: 30px; 
+            background: #f39c12; 
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 10px; 
+            text-align: right; 
+            cursor: pointer; /* แสดงรูปมือเพื่อให้รู้ว่ากดได้ */
+            transition: transform 0.1s, opacity 0.2s;
+            user-select: none;
+        }
+        .receipt-badge:hover { opacity: 0.9; }
+        .receipt-badge:active { transform: scale(0.98); }
+
         .section-title { background: #fcf3cf; padding: 10px; border-left: 5px solid #f39c12; font-weight: bold; margin-top: 25px; margin-bottom: 15px; color: #333; }
         .readonly-field { background-color: #e9ecef !important; font-weight: bold; color: #d35400; }
         .btn-submit { padding: 15px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; border-radius: 10px; background-color: #f39c12; border: none; color: white; }
@@ -25,13 +42,7 @@
 <body>
 
 <div class="container">
-    <div class="text-end mb-2">
-        <a href="../index.html" class="btn btn-outline-primary btn-sm fw-bold">
-            <i class="bi bi-plus-circle"></i> กลับหน้าบันทึกใหม่
-        </a>
-    </div>
-
-    <div class="receipt-badge">
+    <div class="receipt-badge" onclick="location.href='../index.html'" title="กลับหน้าบันทึกข้อมูล">
         <small>แก้ไขใบเสร็จเลขที่</small><br>
         <span id="receiptNoDisplay">- รอดึงข้อมูล -</span>
     </div>
@@ -175,7 +186,6 @@
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxyK8iZi6_icLBsh9i6YXPiciIIoKgC1tBWc9ACZIY7AOhg8EQBMwRPpU55_6bMKHLKQg/exec";
     const THAI_MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
 
-    // ปุ่มลัด
     document.addEventListener('keydown', (e) => {
         if (e.key === "Enter" && document.activeElement.id === "searchReceiptNo") loadReceiptData();
         if (e.key === "Escape") clearForm();
