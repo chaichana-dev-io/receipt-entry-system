@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* เปลี่ยนโทนสีเป็นสีเหลือง/ส้ม สำหรับโหมดแก้ไข */
         body { background-color: #fff9e6; font-family: 'Sarabun', sans-serif; padding: 20px; }
         .container { max-width: 1000px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 25px rgba(0,0,0,0.1); position: relative; }
         h2 { color: #f39c12; font-weight: 700; margin-bottom: 30px; }
@@ -26,23 +25,25 @@
 <body>
 
 <div class="container">
+    <div class="text-end mb-2">
+        <a href="../index.html" class="btn btn-outline-primary btn-sm fw-bold">
+            <i class="bi bi-plus-circle"></i> กลับหน้าบันทึกใหม่
+        </a>
+    </div>
+
     <div class="receipt-badge">
         <small>แก้ไขใบเสร็จเลขที่</small><br>
         <span id="receiptNoDisplay">- รอดึงข้อมูล -</span>
     </div>
-<div class="text-end mb-3">
-    <a href="./edit/index.html" class="btn btn-outline-warning btn-sm fw-bold">
-        <i class="bi bi-pencil-square"></i> ไปหน้าแก้ไขข้อมูล (Admin)
-    </a>
-</div>
+
     <h2><i class="bi bi-pencil-square"></i> แก้ไขข้อมูลใบเสร็จ (Admin)</h2>
     <hr>
 
     <div class="search-area">
         <label class="form-label fw-bold text-dark">ระบุเลขที่ใบเสร็จที่ต้องการแก้ไข (PK)</label>
         <div class="input-group input-group-lg">
-            <span class="input-group-text bg-white"><i class="bi bi-search text-warning"></i></span>
-            <input type="text" id="searchReceiptNo" class="form-control" placeholder="ตัวอย่าง: 6903001-16">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-warning"></i></span>
+            <input type="text" id="searchReceiptNo" class="form-control border-start-0 ps-0" placeholder="ระบุเลขที่ใบเสร็จแล้วกด Enter...">
             <button class="btn btn-warning fw-bold px-4" onclick="loadReceiptData()">ดึงข้อมูลมาแก้ไข</button>
         </div>
         <small class="text-muted mt-2 d-block">* กด Enter เพื่อค้นหา / กด Esc เพื่อล้างหน้าจอ</small>
@@ -70,14 +71,24 @@
                 <label class="form-label">เดือนเริ่มต้น</label>
                 <select id="periodStart" class="form-select" onchange="calculate()">
                     <option value="">- เลือกเดือน -</option>
-                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
+                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                    <option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option>
+                    <option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option>
+                    <option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option>
+                    <option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option>
+                    <option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
                 <label class="form-label">ถึงเดือน (ไม่บังคับ)</label>
                 <select id="periodEnd" class="form-select" onchange="calculate()">
                     <option value="">- เลือกเดือน -</option>
-                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
+                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                    <option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option>
+                    <option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option>
+                    <option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option>
+                    <option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option>
+                    <option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
                 </select>
             </div>
             <div class="col-md-3 mb-3">
@@ -164,7 +175,7 @@
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxyK8iZi6_icLBsh9i6YXPiciIIoKgC1tBWc9ACZIY7AOhg8EQBMwRPpU55_6bMKHLKQg/exec";
     const THAI_MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
 
-    // Keyboard Shortcuts
+    // ปุ่มลัด
     document.addEventListener('keydown', (e) => {
         if (e.key === "Enter" && document.activeElement.id === "searchReceiptNo") loadReceiptData();
         if (e.key === "Escape") clearForm();
@@ -173,20 +184,15 @@
     async function loadReceiptData() {
         const receiptNo = document.getElementById('searchReceiptNo').value.trim();
         if (!receiptNo) return Swal.fire('ระบุเลขใบเสร็จ', '', 'warning');
-
         Swal.fire({ title: 'กำลังค้นหา...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
         try {
             const res = await fetch(`${WEB_APP_URL}?action=getReceiptData&receiptNo=${receiptNo}`);
             const data = await res.json();
-
             if (!data) {
                 Swal.fire('ไม่พบข้อมูล', 'กรุณาตรวจสอบเลขใบเสร็จอีกครั้ง', 'error');
                 document.getElementById('receiptForm').style.display = 'none';
                 return;
             }
-
-            // เติมข้อมูลลงฟอร์ม
             document.getElementById('receiptNo').value = data['เลขที่ใบเสร็จ'];
             document.getElementById('receiptNoDisplay').innerText = data['เลขที่ใบเสร็จ'];
             document.getElementById('room').value = data['ห้อง'];
@@ -208,19 +214,15 @@
             document.getElementById('unpaidWater').value = data['ค่าน้ำค้าง'];
             document.getElementById('unpaidWaterMonth').value = data['ค้างค่าน้ำเดือน'];
             document.getElementById('unpaidWaterYear').value = data['ค้างค่าน้ำปี'];
-
-            // จัดการรอบเดือน (แยก Start/End)
-            const periodStr = data['ส่วนกลางเดือน'];
-            if (periodStr && periodStr.includes(" - ")) {
-                const parts = periodStr.split(" - ");
+            const pStr = data['ส่วนกลางเดือน'];
+            if (pStr && pStr.includes(" - ")) {
+                const parts = pStr.split(" - ");
                 document.getElementById('periodStart').value = parts[0].trim();
                 document.getElementById('periodEnd').value = parts[1].trim();
             } else {
-                document.getElementById('periodStart').value = periodStr;
+                document.getElementById('periodStart').value = pStr;
                 document.getElementById('periodEnd').value = "";
             }
-
-            // จัดการวันที่ (dd/mm/yyyy -> yyyy-mm-dd)
             const parseDate = (dStr) => {
                 if(!dStr || dStr === "-") return "";
                 const p = dStr.split('/');
@@ -228,17 +230,13 @@
             };
             document.getElementById('transferDate').value = parseDate(data['โอนวันที่']);
             document.getElementById('chequeDate').value = parseDate(data['ลงวันที่']);
-
-            // จัดการประเภทการชำระ
             if(data['U'] === "☑") document.getElementById('p1').checked = true;
             else if(data['V'] === "☑") document.getElementById('p2').checked = true;
             else if(data['W'] === "☑") document.getElementById('p3').checked = true;
-
             togglePayFields();
             calculate();
             document.getElementById('receiptForm').style.display = 'block';
             Swal.close();
-
         } catch (e) {
             Swal.fire('Error', 'การเชื่อมต่อผิดพลาด', 'error');
         }
@@ -252,7 +250,6 @@
 
     function calculate() {
         const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
-        
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
         let monthCount = 0;
@@ -267,23 +264,19 @@
             }
         }
         document.getElementById('monthCountBadge').innerText = `${monthCount} เดือน`;
-        
         const commonFee = getVal('sqm') * 25 * monthCount;
         document.getElementById('commonFee').value = commonFee > 0 ? commonFee.toFixed(2) : "";
-
         const unit = Math.max(0, getVal('currMeter') - getVal('prevMeter'));
         const waterFee = unit * 18;
         document.getElementById('waterUnit').value = unit > 0 ? unit : "";
         document.getElementById('waterFee').value = waterFee > 0 ? waterFee.toFixed(2) : "";
-
         const sumCar = getVal('car') * 500;
-        document.getElementById('sumCar').value = sumCar > 0 ? sumCar.toFixed(2) : "";
         const sumMc = getVal('mc') * 100;
-        document.getElementById('sumMc').value = sumMc > 0 ? sumMc.toFixed(2) : "";
-
         const grandTotal = commonFee + waterFee + sumCar + sumMc + getVal('total_input') + getVal('other');
         document.getElementById('grandTotal').value = grandTotal > 0 ? grandTotal.toFixed(2) : "";
         document.getElementById('bahtText').value = grandTotal > 0 ? ThaiBahtText(grandTotal) : "";
+        document.getElementById('sumCar').value = sumCar > 0 ? sumCar.toFixed(2) : "";
+        document.getElementById('sumMc').value = sumMc > 0 ? sumMc.toFixed(2) : "";
     }
 
     function ThaiBahtText(num) {
@@ -325,16 +318,12 @@
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
         document.getElementById('finalPeriod').value = (startM && endM) ? `${startM} - ${endM}` : startM;
-
         const { isConfirmed } = await Swal.fire({ title: 'ยืนยันการบันทึกแก้ไข?', text: 'ข้อมูลเดิมในชีตจะถูกเขียนทับ', icon: 'warning', showCancelButton: true });
         if (!isConfirmed) return;
-
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('loader').style.display = 'block';
-
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
-        
         try {
             const resp = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(data) });
             const res = await resp.json();
