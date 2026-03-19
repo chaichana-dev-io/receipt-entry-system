@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบจัดการใบเสร็จ - เจริญกรุง คอนโดมิเนียม 3</title>
-    
-    <script>
-        if (localStorage.getItem('admin_token') !== 'ADMIN_LOGGED_IN') {
-            window.location.href = 'login.html';
-        }
-    </script>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -29,28 +22,6 @@
             display: flex;
             align-items: center;
             color: #333;
-            position: relative;
-        }
-
-        /* ปุ่มออกจากระบบ */
-        .btn-logout {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: #dc3545;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 8px 15px;
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-        .btn-logout:hover {
-            background: #fff5f5;
-            transform: translateY(-2px);
         }
 
         .main-container {
@@ -82,6 +53,7 @@
             letter-spacing: 1px;
         }
 
+        /* ปรับแต่ง Card ให้มี 2 สีและเด่นขึ้น */
         .menu-card {
             border: 2px solid transparent;
             border-radius: 24px;
@@ -100,6 +72,7 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
 
+        /* Card 1: บันทึกข้อมูล (สีฟ้า) */
         .entry-card {
             background-color: var(--entry-bg);
             border-color: #e0ecff;
@@ -113,6 +86,7 @@
             box-shadow: 0 5px 15px rgba(13, 110, 253, 0.1);
         }
 
+        /* Card 2: ออกใบเสร็จ (สีเขียว) */
         .export-card {
             background-color: var(--export-bg);
             border-color: #e6f4ea;
@@ -160,10 +134,6 @@
 </head>
 <body>
 
-<a href="#" class="btn-logout" onclick="doLogout()">
-    <i class="bi bi-box-arrow-right"></i> ออกจากระบบ
-</a>
-
 <div class="main-container">
     <div class="logo-section">
         <div class="logo-placeholder">
@@ -175,7 +145,7 @@
 
     <div class="row g-4 mt-2">
         <div class="col-md-6">
-            <a href="entry/index.html" class="menu-card entry-card">
+            <a href="https://chaichana-dev-io.github.io/receipt-entry-system/entry" class="menu-card entry-card">
                 <div class="icon-circle">
                     <i class="bi bi-pencil-square"></i>
                 </div>
@@ -185,7 +155,7 @@
         </div>
 
         <div class="col-md-6">
-            <a href="export/index.html" class="menu-card export-card">
+            <a href="https://chaichana-dev-io.github.io/receipt-entry-system/export" class="menu-card export-card">
                 <div class="icon-circle">
                     <i class="bi bi-file-earmark-pdf-fill"></i>
                 </div>
@@ -199,14 +169,6 @@
         © 2026 Charoen Krung Condominium 3 | บริหารจัดการโดยนิติบุคคล
     </div>
 </div>
-
-<script>
-    // ฟังก์ชันออกจากระบบ
-    function doLogout() {
-        localStorage.removeItem('admin_token');
-        window.location.href = 'login.html';
-    }
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
