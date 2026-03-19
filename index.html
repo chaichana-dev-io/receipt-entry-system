@@ -6,12 +6,30 @@
     <title>ระบบบันทึกข้อมูล - นิติบุคคล</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { background-color: #f4f7f6; font-family: 'Sarabun', sans-serif; padding: 20px; }
         .container { max-width: 1000px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 25px rgba(0,0,0,0.1); position: relative; }
         h2 { color: #0d6efd; font-weight: 700; margin-bottom: 30px; }
-        .receipt-badge { position: absolute; top: 30px; right: 30px; background: #28a745; color: white; padding: 10px 20px; border-radius: 10px; text-align: right; }
+        
+        /* ปรับส่วนพื้นที่สีเขียวให้กดได้ (ซ่อนฟังก์ชันแก้ไข) */
+        .receipt-badge { 
+            position: absolute; 
+            top: 30px; 
+            right: 30px; 
+            background: #28a745; 
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 10px; 
+            text-align: right; 
+            cursor: pointer; 
+            transition: opacity 0.2s;
+            user-select: none;
+        }
+        .receipt-badge:hover { opacity: 0.9; }
+        .receipt-badge:active { transform: scale(0.98); }
+
         .section-title { background: #f8f9fa; padding: 10px; border-left: 5px solid #0d6efd; font-weight: bold; margin-top: 25px; margin-bottom: 15px; color: #333; }
         .readonly-field { background-color: #e9ecef !important; font-weight: bold; color: #0d6efd; }
         .btn-submit { padding: 15px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; border-radius: 10px; }
@@ -22,7 +40,7 @@
 <body>
 
 <div class="container">
-    <div class="receipt-badge">
+    <div class="receipt-badge" onclick="location.href='./edit/index.html'" title="เข้าสู่โหมดแก้ไข (Admin)">
         <small>รหัสอ้างอิงใบเสร็จ</small><br>
         <span id="receiptNoDisplay">- รอรันเลข -</span>
     </div>
@@ -186,6 +204,11 @@
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxyK8iZi6_icLBsh9i6YXPiciIIoKgC1tBWc9ACZIY7AOhg8EQBMwRPpU55_6bMKHLKQg/exec";
     const THAI_MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
 
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Enter" && document.activeElement.id === "room") onRoomInput();
+        if (e.key === "Escape") clearForm();
+    });
+
     function togglePayFields() {
         const type = document.querySelector('input[name="payType"]:checked').value;
         document.getElementById('v_fields').style.display = (type === 'เงินโอน') ? 'block' : 'none';
@@ -228,15 +251,12 @@
         if (room.trim() !== "") {
             meterInput.value = "1";
             totalInput.value = "50.00";
-
             try {
                 nameInput.placeholder = "กำลังค้นหาข้อมูล...";
-                
                 const [roomRes, receiptRes] = await Promise.all([
                     fetch(`${WEB_APP_URL}?action=getRoomData&room=${room}`).then(res => res.json()),
                     fetch(`${WEB_APP_URL}?action=getReceiptNo&room=${room}`).then(res => res.text())
                 ]);
-
                 if (roomRes.found) {
                     nameInput.value = roomRes.name;
                     sqmInput.value = roomRes.sqm;
@@ -245,10 +265,8 @@
                     nameInput.placeholder = "ไม่พบข้อมูล กรุณาระบุชื่อ";
                     sqmInput.value = "";
                 }
-
                 document.getElementById('receiptNo').value = receiptRes;
                 document.getElementById('receiptNoDisplay').innerText = receiptRes;
-
             } catch (e) {
                 nameInput.placeholder = "ระบุชื่อ";
             }
@@ -261,17 +279,14 @@
             document.getElementById('receiptNo').value = "";
             document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
         }
-        
         calculate();
     }
 
     function calculate() {
         const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
-        
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
         let monthCount = 0;
-        
         if (startM) {
             monthCount = 1;
             if (endM) {
@@ -283,24 +298,19 @@
             }
         }
         document.getElementById('monthCountBadge').innerText = `${monthCount} เดือน`;
-        
         const commonFee = getVal('sqm') * 25 * monthCount;
         document.getElementById('commonFee').value = commonFee > 0 ? commonFee.toFixed(2) : "";
-
         const unit = Math.max(0, getVal('currMeter') - getVal('prevMeter'));
         const waterFee = unit * 18;
         document.getElementById('waterUnit').value = unit > 0 ? unit : "";
         document.getElementById('waterFee').value = waterFee > 0 ? waterFee.toFixed(2) : "";
-
         const sumCar = getVal('car') * 500;
-        document.getElementById('sumCar').value = sumCar > 0 ? sumCar.toFixed(2) : "";
-
         const sumMc = getVal('mc') * 100;
-        document.getElementById('sumMc').value = sumMc > 0 ? sumMc.toFixed(2) : "";
-
         const grandTotal = commonFee + waterFee + sumCar + sumMc + getVal('total_input') + getVal('other');
         document.getElementById('grandTotal').value = grandTotal > 0 ? grandTotal.toFixed(2) : "";
         document.getElementById('bahtText').value = grandTotal > 0 ? ThaiBahtText(grandTotal) : "";
+        document.getElementById('sumCar').value = sumCar > 0 ? sumCar.toFixed(2) : "";
+        document.getElementById('sumMc').value = sumMc > 0 ? sumMc.toFixed(2) : "";
     }
 
     function clearForm() {
@@ -314,26 +324,17 @@
 
     document.getElementById('receiptForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
         const finalPeriod = (startM && endM) ? `${startM} - ${endM}` : startM;
         document.getElementById('finalPeriod').value = finalPeriod;
-
         const { isConfirmed } = await Swal.fire({ title: 'บันทึกข้อมูล?', icon: 'question', showCancelButton: true });
         if (!isConfirmed) return;
-
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('loader').style.display = 'block';
-
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
-        
-        // ถอดฟิลด์ยอดค้างและช่องอื่นๆ ออกจากการถูกบังคับให้เป็น 0 เพื่อให้เวลาไม่กรอกจะได้ส่งค่าว่างไปครับ
-        ['commonFee','waterFee','sumCar','sumMc','grandTotal','sqm','total_input','other'].forEach(k => {
-            if(!data[k]) data[k] = 0;
-        });
-
+        ['commonFee','waterFee','grandTotal','sqm','total_input','other'].forEach(k => { if(!data[k]) data[k] = 0; });
         try {
             const resp = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(data) });
             const res = await resp.json();
