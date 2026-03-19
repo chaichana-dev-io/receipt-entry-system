@@ -329,7 +329,181 @@
         const finalPeriod = (startM && endM) ? `${startM} - ${endM}` : startM;
         document.getElementById('finalPeriod').value = finalPeriod;
         const { isConfirmed } = await Swal.fire({ title: 'บันทึกข้อมูล?', icon: 'question', showCancelButton: true });
-        if (!isConfirmed) return;
+        if (!i<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการใบเสร็จ - เจริญกรุง คอนโดมิเนียม 3</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --entry-bg: #f0f7ff;
+            --entry-border: #0d6efd;
+            --export-bg: #f2faf3;
+            --export-border: #28a745;
+        }
+
+        body { 
+            background-color: #ffffff; 
+            font-family: 'Sarabun', sans-serif; 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            color: #333;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-placeholder img {
+            max-width: 350px;
+            height: auto;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        /* ปรับแต่ง Card ให้มี 2 สีและเด่นขึ้น */
+        .menu-card {
+            border: 2px solid transparent;
+            border-radius: 24px;
+            padding: 50px 30px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: block;
+            height: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Card 1: บันทึกข้อมูล (สีฟ้า) */
+        .entry-card {
+            background-color: var(--entry-bg);
+            border-color: #e0ecff;
+        }
+        .entry-card:hover {
+            border-color: var(--entry-border);
+        }
+        .entry-card .icon-circle {
+            background-color: #ffffff;
+            color: var(--entry-border);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.1);
+        }
+
+        /* Card 2: ออกใบเสร็จ (สีเขียว) */
+        .export-card {
+            background-color: var(--export-bg);
+            border-color: #e6f4ea;
+        }
+        .export-card:hover {
+            border-color: var(--export-border);
+        }
+        .export-card .icon-circle {
+            background-color: #ffffff;
+            color: var(--export-border);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.1);
+        }
+
+        .icon-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 3rem;
+            transition: all 0.3s;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .card-desc {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            color: #adb5bd;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="logo-section">
+        <div class="logo-placeholder">
+            <img src="https://img1.pic.in.th/images/Untitled-design01481aab804c105d.png" alt="Charoen Krung 3 Logo">
+        </div>
+        <h1>CHAROEN KRUNG CONDOMINIUM 3</h1>
+        <p class="subtitle text-uppercase">Receipt Management System</p>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-6">
+            <a href="https://chaichana-dev-io.github.io/receipt-entry-system/entry" class="menu-card entry-card">
+                <div class="icon-circle">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <div class="card-title">บันทึกข้อมูลใบเสร็จ</div>
+                <div class="card-desc">จัดการกรอกข้อมูลรายเดือน ค่าน้ำ และค่าส่วนกลางเพื่อบันทึกลงฐานข้อมูลนิติบุคคล</div>
+            </a>
+        </div>
+
+        <div class="col-md-6">
+            <a href="https://chaichana-dev-io.github.io/receipt-entry-system/export" class="menu-card export-card">
+                <div class="icon-circle">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                </div>
+                <div class="card-title">ออกใบเสร็จรับเงิน</div>
+                <div class="card-desc">ตรวจสอบประวัติ ค้นหารายการ และสร้างไฟล์ PDF เพื่อจัดพิมพ์หรือส่งมอบให้ลูกบ้าน</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2026 Charoen Krung Condominium 3 | บริหารจัดการโดยนิติบุคคล
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>sConfirmed) return;
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('loader').style.display = 'block';
         const formData = new FormData(e.target);
