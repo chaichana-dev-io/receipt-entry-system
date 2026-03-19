@@ -6,7 +6,6 @@
     <title>ระบบบันทึกข้อมูล - นิติบุคคล</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { background-color: #f4f7f6; font-family: 'Sarabun', sans-serif; padding: 20px; }
@@ -23,12 +22,6 @@
 <body>
 
 <div class="container">
-    <div class="text-end mb-2">
-        <a href="./edit/index.html" class="btn btn-outline-warning btn-sm fw-bold">
-            <i class="bi bi-pencil-square"></i> ไปหน้าแก้ไขข้อมูล (Admin)
-        </a>
-    </div>
-
     <div class="receipt-badge">
         <small>รหัสอ้างอิงใบเสร็จ</small><br>
         <span id="receiptNoDisplay">- รอรันเลข -</span>
@@ -193,12 +186,6 @@
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxyK8iZi6_icLBsh9i6YXPiciIIoKgC1tBWc9ACZIY7AOhg8EQBMwRPpU55_6bMKHLKQg/exec";
     const THAI_MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
 
-    // ปุ่มลัด
-    document.addEventListener('keydown', (e) => {
-        if (e.key === "Enter" && document.activeElement.id === "room") onRoomInput();
-        if (e.key === "Escape") clearForm();
-    });
-
     function togglePayFields() {
         const type = document.querySelector('input[name="payType"]:checked').value;
         document.getElementById('v_fields').style.display = (type === 'เงินโอน') ? 'block' : 'none';
@@ -241,12 +228,15 @@
         if (room.trim() !== "") {
             meterInput.value = "1";
             totalInput.value = "50.00";
+
             try {
                 nameInput.placeholder = "กำลังค้นหาข้อมูล...";
+                
                 const [roomRes, receiptRes] = await Promise.all([
                     fetch(`${WEB_APP_URL}?action=getRoomData&room=${room}`).then(res => res.json()),
                     fetch(`${WEB_APP_URL}?action=getReceiptNo&room=${room}`).then(res => res.text())
                 ]);
+
                 if (roomRes.found) {
                     nameInput.value = roomRes.name;
                     sqmInput.value = roomRes.sqm;
@@ -255,8 +245,10 @@
                     nameInput.placeholder = "ไม่พบข้อมูล กรุณาระบุชื่อ";
                     sqmInput.value = "";
                 }
+
                 document.getElementById('receiptNo').value = receiptRes;
                 document.getElementById('receiptNoDisplay').innerText = receiptRes;
+
             } catch (e) {
                 nameInput.placeholder = "ระบุชื่อ";
             }
@@ -269,14 +261,17 @@
             document.getElementById('receiptNo').value = "";
             document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
         }
+        
         calculate();
     }
 
     function calculate() {
         const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
+        
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
         let monthCount = 0;
+        
         if (startM) {
             monthCount = 1;
             if (endM) {
@@ -288,19 +283,24 @@
             }
         }
         document.getElementById('monthCountBadge').innerText = `${monthCount} เดือน`;
+        
         const commonFee = getVal('sqm') * 25 * monthCount;
         document.getElementById('commonFee').value = commonFee > 0 ? commonFee.toFixed(2) : "";
+
         const unit = Math.max(0, getVal('currMeter') - getVal('prevMeter'));
         const waterFee = unit * 18;
         document.getElementById('waterUnit').value = unit > 0 ? unit : "";
         document.getElementById('waterFee').value = waterFee > 0 ? waterFee.toFixed(2) : "";
+
         const sumCar = getVal('car') * 500;
+        document.getElementById('sumCar').value = sumCar > 0 ? sumCar.toFixed(2) : "";
+
         const sumMc = getVal('mc') * 100;
+        document.getElementById('sumMc').value = sumMc > 0 ? sumMc.toFixed(2) : "";
+
         const grandTotal = commonFee + waterFee + sumCar + sumMc + getVal('total_input') + getVal('other');
         document.getElementById('grandTotal').value = grandTotal > 0 ? grandTotal.toFixed(2) : "";
         document.getElementById('bahtText').value = grandTotal > 0 ? ThaiBahtText(grandTotal) : "";
-        document.getElementById('sumCar').value = sumCar > 0 ? sumCar.toFixed(2) : "";
-        document.getElementById('sumMc').value = sumMc > 0 ? sumMc.toFixed(2) : "";
     }
 
     function clearForm() {
@@ -314,16 +314,26 @@
 
     document.getElementById('receiptForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
-        document.getElementById('finalPeriod').value = (startM && endM) ? `${startM} - ${endM}` : startM;
+        const finalPeriod = (startM && endM) ? `${startM} - ${endM}` : startM;
+        document.getElementById('finalPeriod').value = finalPeriod;
+
         const { isConfirmed } = await Swal.fire({ title: 'บันทึกข้อมูล?', icon: 'question', showCancelButton: true });
         if (!isConfirmed) return;
+
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('loader').style.display = 'block';
+
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
-        ['commonFee','waterFee','grandTotal','sqm','total_input','other'].forEach(k => { if(!data[k]) data[k] = 0; });
+        
+        // ถอดฟิลด์ยอดค้างและช่องอื่นๆ ออกจากการถูกบังคับให้เป็น 0 เพื่อให้เวลาไม่กรอกจะได้ส่งค่าว่างไปครับ
+        ['commonFee','waterFee','sumCar','sumMc','grandTotal','sqm','total_input','other'].forEach(k => {
+            if(!data[k]) data[k] = 0;
+        });
+
         try {
             const resp = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(data) });
             const res = await resp.json();
