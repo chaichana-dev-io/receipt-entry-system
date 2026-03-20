@@ -9,11 +9,25 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body { background-color: #fff9e6; font-family: 'Sarabun', sans-serif; padding: 20px; }
-        .container { max-width: 1000px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 25px rgba(0,0,0,0.1); position: relative; }
+        body { 
+            background-color: #fff9e6; 
+            font-family: 'Sarabun', sans-serif; 
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1000px; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 25px rgba(0,0,0,0.1); 
+            position: relative;
+            flex: 1;
+        }
         h2 { color: #f39c12; font-weight: 700; margin-bottom: 30px; }
         
-        /* ปรับส่วนพื้นที่สีเหลืองให้กดได้เพื่อกลับหน้าหลัก */
         .receipt-badge { 
             position: absolute; 
             top: 30px; 
@@ -23,7 +37,7 @@
             padding: 10px 20px; 
             border-radius: 10px; 
             text-align: right; 
-            cursor: pointer; /* แสดงรูปมือเพื่อให้รู้ว่ากดได้ */
+            cursor: pointer;
             transition: transform 0.1s, opacity 0.2s;
             user-select: none;
         }
@@ -37,6 +51,15 @@
         input[type=number] { text-align: right; }
         .total-highlight { color: #e67e22 !important; border-color: #f39c12 !important; }
         .search-area { background: #fef5e7; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #fad7a0; }
+
+        /* ส่วน Footer สีเทา ตรงกลาง */
+        .footer {
+            text-align: center;
+            color: #888;
+            font-size: 0.85rem;
+            padding: 20px 0;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -44,7 +67,7 @@
 <div class="container">
     <div class="receipt-badge" onclick="location.href='https://chaichana-dev-io.github.io/receipt-entry-system/entry'" title="กลับหน้าบันทึกข้อมูล">
         <small>แก้ไขใบเสร็จเลขที่</small><br>
-        <span id="receiptNoDisplay">- รอดึงข้อมูล -</span>
+        <span id="receiptNoDisplay">- รอรันเลข -</span>
     </div>
 
     <h2><i class="bi bi-pencil-square"></i> แก้ไขข้อมูลใบเสร็จ (Admin)</h2>
@@ -165,7 +188,7 @@
             </div>
         </div>
 
-        <div class="section-title text-muted">5. รายการค้างชำระ (ถ้ามี)</div>
+        <div class="section-title">5. รายการค้างชำระ (ถ้ามี)</div>
         <div class="row mb-2">
             <div class="col-md-4"><label class="form-label small">ส่วนกลางค้าง (บาท)</label><input type="number" name="unpaidCommon" id="unpaidCommon" class="form-control"></div>
             <div class="col-md-4"><label class="form-label small">เดือนที่ค้าง</label><input type="text" name="unpaidMonth" id="unpaidMonth" class="form-control"></div>
@@ -181,9 +204,9 @@
     </form>
     <div id="loader" style="display:none;" class="text-center mt-3 text-warning fw-bold">กำลังประมวลผล...</div>
 </div>
-        <div class="footer">
-        © 2026 Charoen Krung Condominium 3 | บริหารจัดการโดยนิติบุคคล
-    </div>
+
+<div class="footer">
+    © 2026 Charoen Krung Condominium 3 | บริหารจัดการโดยนิติบุคคล
 </div>
 
 <script>
@@ -323,7 +346,7 @@
         document.getElementById('receiptForm').reset();
         document.getElementById('receiptForm').style.display = 'none';
         document.getElementById('searchReceiptNo').value = "";
-        document.getElementById('receiptNoDisplay').innerText = "- รอดึงข้อมูล -";
+        document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
         document.getElementById('searchReceiptNo').focus();
     }
 
