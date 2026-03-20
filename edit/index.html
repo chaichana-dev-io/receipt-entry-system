@@ -218,41 +218,55 @@
         if (e.key === "Escape") clearForm();
     });
 
-    async function loadReceiptData() {
-        const receiptNo = document.getElementById('searchReceiptNo').value.trim();
-        if (!receiptNo) return Swal.fire('ระบุเลขใบเสร็จ', '', 'warning');
-        Swal.fire({ title: 'กำลังค้นหา...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+async function loadFullData(receiptNo) {
+        Swal.fire({ title: 'กำลังดึงข้อมูล...', background: 'rgba(40, 45, 55, 0.95)', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
         try {
             const res = await fetch(`${WEB_APP_URL}?action=getReceiptData&receiptNo=${receiptNo}`);
-            const data = await res.json();
-            if (!data) {
-                Swal.fire('ไม่พบข้อมูล', 'กรุณาตรวจสอบเลขใบเสร็จอีกครั้ง', 'error');
-                document.getElementById('receiptForm').style.display = 'none';
-                return;
-            }
-            document.getElementById('receiptNo').value = data['เลขที่ใบเสร็จ'];
-            document.getElementById('receiptNoDisplay').innerText = data['เลขที่ใบเสร็จ'];
-            document.getElementById('room').value = data['ห้อง'];
-            document.getElementById('name').value = data['ชื่อเจ้าของ / ผู้เช่า'];
-            document.getElementById('sqm').value = data['ตารางเมตร'];
-            document.getElementById('waterMonth').value = data['เดือนค่าน้ำ'];
-            document.getElementById('waterYear').value = data['ปีค่าน้ำ'];
-            document.getElementById('prevMeter').value = data['มิเตอร์ครั้งก่อน'];
-            document.getElementById('currMeter').value = data['มิเตอร์ปัจจุบัน'];
-            document.getElementById('meter').value = data['มิเตอร์'];
-            document.getElementById('total_input').value = data['ยอด'];
-            document.getElementById('car').value = data['CAR'];
-            document.getElementById('mc').value = data['MC'];
-            document.getElementById('reason').value = data['เหตุผล'];
-            document.getElementById('other').value = data['อื่นๆ'];
-            document.getElementById('unpaidCommon').value = data['ส่วนกลางค้าง'];
-            document.getElementById('unpaidMonth').value = data['เดือนค้าง'];
-            document.getElementById('unpaidYear').value = data['ปีค้าง'];
-            document.getElementById('unpaidWater').value = data['ค่าน้ำค้าง'];
-            document.getElementById('unpaidWaterMonth').value = data['ค้างค่าน้ำเดือน'];
-            document.getElementById('unpaidWaterYear').value = data['ค้างค่าน้ำปี'];
-            const pStr = data['ส่วนกลางเดือน'];
-            if (pStr && pStr.includes(" - ")) {
+            const d = await res.json();
+            if (!d) throw new Error();
+
+            // Mapping ข้อมูลตามชื่อหัวตารางที่นายส่งมา
+            document.getElementById('receiptNo').value = d['เลขที่ใบเสร็จ'];
+            document.getElementById('receiptNoDisplay').innerText = d['เลขที่ใบเสร็จ'];
+            document.getElementById('room').value = d['ห้อง'];
+            document.getElementById('name').value = d['ชื่อเจ้าของ / ผู้เช่า'];
+            document.getElementById('sqm').value = d['ตารางเมตร'];
+            
+            document.getElementById('prevMeter').value = d['มิเตอร์ครั้งก่อน'];
+            document.getElementById('currMeter').value = d['มิเตอร์ปัจจุบัน'];
+            document.getElementById('waterMonth').value = d['เดือนค่าน้ำ'];
+            document.getElementById('waterYear').value = d['ปีค่าน้ำ'];
+            
+            document.getElementById('car').value = d['CAR'];
+            document.getElementById('mc').value = d['MC'];
+            document.getElementById('other').value = d['อื่นๆ'];
+            document.getElementById('reason').value = d['เหตุผล'];
+
+            document.getElementById('unpaidCommon').value = d['ส่วนกลางค้าง'];
+            document.getElementById('unpaidMonth').value = d['เดือนค้าง'];
+            document.getElementById('unpaidYear').value = d['ปีค้าง'];
+            document.getElementById('unpaidWater').value = d['ค่าน้ำค้าง'];
+            document.getElementById('unpaidWaterMonth').value = d['ค้างค่าน้ำเดือน'];
+            document.getElementById('unpaidWaterYear').value = d['ค้างค่าน้ำปี'];
+
+            // เช็คช่องติ๊กถูก U, V, W
+            if(d['U'] === "☑") document.getElementById('p1').checked = true;
+            else if(d['V'] === "☑") document.getElementById('p2').checked = true;
+            else if(d['W'] === "☑") document.getElementById('p3').checked = true;
+
+            const parseDate = (s) => { 
+                if(!s || s === "-" || s === "") return ""; 
+                const p = s.split('/'); 
+                return p.length === 3 ? `${parseInt(p[2])-543}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}` : ""; 
+            };
+            document.getElementById('transferDate').value = parseDate(d['โอนวันที่']);
+            document.getElementById('bankName').value = d['ธนาคาร'];
+            document.getElementById('bankBranch').value = d['สาขา'];
+            document.getElementById('chequeNo').value = d['เลขที่เช็ค'];
+            document.getElementById('chequeDate').value = parseDate(d['ลงวันที่เช็ค']);
+
+            const pStr = d['ส่วนกลางเดือน'] || "";
+            if (pStr.includes(" - ")) {
                 const parts = pStr.split(" - ");
                 document.getElementById('periodStart').value = parts[0].trim();
                 document.getElementById('periodEnd').value = parts[1].trim();
@@ -260,23 +274,13 @@
                 document.getElementById('periodStart').value = pStr;
                 document.getElementById('periodEnd').value = "";
             }
-            const parseDate = (dStr) => {
-                if(!dStr || dStr === "-") return "";
-                const p = dStr.split('/');
-                return p.length === 3 ? `${parseInt(p[2])-543}-${p[1]}-${p[0]}` : "";
-            };
-            document.getElementById('transferDate').value = parseDate(data['โอนวันที่']);
-            document.getElementById('chequeDate').value = parseDate(data['ลงวันที่']);
-            if(data['U'] === "☑") document.getElementById('p1').checked = true;
-            else if(data['V'] === "☑") document.getElementById('p2').checked = true;
-            else if(data['W'] === "☑") document.getElementById('p3').checked = true;
-            togglePayFields();
-            calculate();
+
+            togglePayFields(); calculate();
             document.getElementById('receiptForm').style.display = 'block';
+            document.getElementById('recentTableArea').style.display = 'none';
             Swal.close();
-        } catch (e) {
-            Swal.fire('Error', 'การเชื่อมต่อผิดพลาด', 'error');
-        }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (e) { Swal.fire({ title: 'Error', text: 'โหลดข้อมูลไม่สำเร็จ', icon: 'error', background: 'rgba(40, 45, 55, 0.95)' }); }
     }
 
     function togglePayFields() {
