@@ -9,7 +9,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body { background-color: #f4f7f6; font-family: 'Sarabun', sans-serif; padding: 20px; }
+        body { 
+            background-color: #f4f7f6; 
+            font-family: 'Sarabun', sans-serif; 
+            padding: 20px; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
         .container { 
             max-width: 1000px; 
             background: white; 
@@ -17,11 +24,12 @@
             border-radius: 20px; 
             box-shadow: 0 4px 25px rgba(0,0,0,0.1); 
             margin-top: 20px;
+            flex: 1;
         }
         
         h2 { color: #0d6efd; font-weight: 700; margin: 0; }
 
-        /* 1. ปุ่มกลับหน้าหลัก (สไตล์เหนือเส้น) */
+        /* 1. ปุ่มกลับหน้าหลัก */
         .btn-back-home {
             text-decoration: none;
             color: #6c757d;
@@ -42,14 +50,14 @@
             transform: translateY(-2px);
         }
 
-        /* 2. ป้ายสีเขียวเลขที่ใบเสร็จ (อยู่แถวเดียวกับเลขห้อง - ไม่ลอยแล้ว) */
+        /* 2. ป้ายสีเขียวเลขที่ใบเสร็จ */
         .receipt-badge { 
             background: #28a745; 
             color: white; 
             padding: 10px 15px; 
             border-radius: 10px; 
             text-align: center; 
-            cursor: default; /* ซ่อนความลับ ไม่ให้ขึ้นรูปมือ */
+            cursor: default; 
             user-select: none;
             display: block;
             width: 100%;
@@ -63,6 +71,16 @@
         .btn-submit { padding: 15px; font-size: 1.2rem; font-weight: bold; margin-top: 20px; border-radius: 10px; }
         input[type=number] { text-align: right; }
         .total-highlight { color: #0d6efd !important; border-color: #0d6efd !important; }
+
+        /* ส่วน Footer สีเทา ตรงกลาง */
+        .footer {
+            text-align: center;
+            color: #888;
+            font-size: 0.85rem;
+            padding: 20px 0;
+            width: 100%;
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
@@ -85,11 +103,11 @@
         <div class="row align-items-end mb-3">
             <div class="col-md-2 mb-3">
                 <label class="form-label fw-bold">ห้อง (เลขที่)</label>
-                <input type="number" name="room" id="room" class="form-control" required oninput="onRoomInput();">
+                <input type="number" name="room" id="room" class="form-control" required onblur="onRoomInput();">
             </div>
             <div class="col-md-7 mb-3">
                 <label class="form-label fw-bold">ชื่อเจ้าของ / ผู้เช่า</label>
-                <input type="text" name="name" class="form-control" placeholder="ระบุชื่อ">
+                <input type="text" name="name" id="name" class="form-control" placeholder="ระบุชื่อ">
             </div>
             <div class="col-md-3 mb-3 text-end">
                 <div class="receipt-badge" onclick="location.href='./edit/index.html'" title="Display Only">
@@ -234,9 +252,9 @@
     </form>
     <div id="loader" style="display:none;" class="text-center mt-3 text-primary fw-bold">กำลังบันทึก...</div>
 </div>
-        <div class="footer">
-        © 2026 Charoen Krung Condominium 3 | บริหารจัดการโดยนิติบุคคล
-    </div>
+
+<div class="footer">
+    © 2026 Charoen Krung Condominium 3 | บริหารจัดการโดยนิติบุคคล
 </div>
 
 <script>
@@ -280,18 +298,27 @@
         return res.replace("หนึ่งสิบ", "สิบ");
     }
 
+    // ฟังก์ชันดึงข้อมูลเมื่อระบุเลขห้อง (Tab/Click-out)
     async function onRoomInput() {
         const room = document.getElementById('room').value;
-        const nameInput = document.querySelector('input[name="name"]');
+        // ปรับ ID ให้ตรงกับฟิลด์ Name ใน HTML ของนาย
+        const nameInput = document.querySelector('input[name="name"]'); 
         const sqmInput = document.getElementById('sqm');
+        
         if (room.trim() !== "") {
             document.getElementById('meter').value = "1";
             document.getElementById('total_input').value = "50.00";
+            
+            // แสดงสถานะรอดึงข้อมูลชั่วคราว
+            document.getElementById('receiptNoDisplay').innerText = "กำลังดึงข้อมูล...";
+            
             try {
                 const [roomRes, receiptRes] = await Promise.all([
                     fetch(`${WEB_APP_URL}?action=getRoomData&room=${room}`).then(res => res.json()),
                     fetch(`${WEB_APP_URL}?action=getReceiptNo&room=${room}`).then(res => res.text())
                 ]);
+                
+                // 1. นำชื่อ และ พื้นที่มาใส่ฟิลด์
                 if (roomRes.found) {
                     nameInput.value = roomRes.name;
                     sqmInput.value = roomRes.sqm;
@@ -300,11 +327,17 @@
                     nameInput.placeholder = "ไม่พบข้อมูล กรุณาระบุชื่อ";
                     sqmInput.value = "";
                 }
+                
+                // 2. รันเลขที่ใบเสร็จ
                 document.getElementById('receiptNo').value = receiptRes;
                 document.getElementById('receiptNoDisplay').innerText = receiptRes;
-            } catch (e) { console.error(e); }
+                
+            } catch (e) { 
+                console.error(e); 
+                document.getElementById('receiptNoDisplay').innerText = "Error";
+            }
         }
-        calculate();
+        calculate(); // คำนวณยอดเงินทันทีหลังดึงพื้นที่มาแล้ว
     }
 
     function calculate() {
