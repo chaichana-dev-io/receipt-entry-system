@@ -338,7 +338,7 @@
     async function onRoomInput() {
         const room = document.getElementById('room').value;
         if (!room) return;
-        document.getElementById('receiptNoDisplay').innerText = "FETCHING...";
+        document.getElementById('receiptNoDisplay').innerText = "เลขที่ใบเสร็จ...";
         try {
             const [roomRes, receiptRes] = await Promise.all([
                 fetch(`${WEB_APP_URL}?action=getRoomData&room=${room}`).then(res => res.json()),
