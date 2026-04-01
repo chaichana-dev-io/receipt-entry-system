@@ -379,7 +379,10 @@
         document.getElementById('waterFee').value = waterFee > 0 ? waterFee.toFixed(2) : "";
         document.getElementById('sumCar').value = (getVal('car') * 500).toFixed(2);
         document.getElementById('sumMc').value = (getVal('mc') * 100).toFixed(2);
-        const total = commonFee + waterFee + (getVal('car') * 500) + (getVal('mc') * 100) + 50 + getVal('other');
+        
+        // 🚩 เปลี่ยนค่า 50 เป็น 40 ตามที่นายสั่งแล้วครับ
+        const total = commonFee + waterFee + (getVal('car') * 500) + (getVal('mc') * 100) + 40 + getVal('other');
+        
         document.getElementById('grandTotal').value = total > 0 ? total.toFixed(2) : "";
         document.getElementById('bahtText').value = total > 0 ? ThaiBahtText(total) : "";
         document.getElementById('finalPeriod').value = (monthCount > 1) ? `${startM} - ${endM}` : startM;
