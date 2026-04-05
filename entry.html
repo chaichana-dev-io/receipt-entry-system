@@ -11,10 +11,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* 🛠️ คู่มือแก้ไข: การตั้งค่าสีธีม (เปลี่ยนรหัสสี Hex code ด้านล่างนี้) */
         :root {
-            --gold: #ffd700;
-            --gold-dark: #d4af37;
-            --gold-soft: rgba(255, 215, 0, 0.15);
+            --gold: #ffd700;       /* สีทองสว่าง */
+            --gold-dark: #d4af37;  /* สีทองเข้ม */
+            --gold-soft: rgba(255, 215, 0, 0.15); /* สีทองโปร่งแสง */
         }
 
         /* 🔥 Premium Dark Theme Background */
@@ -123,7 +124,6 @@
         }
         .btn-submit:hover { filter: brightness(1.1); transform: translateY(-3px); }
 
-        /* 🏆 ✨ SweetAlert2 Custom Styling (เทาโปร่งใส + ขอบทอง) ✨ */
         .swal2-popup {
             background: rgba(40, 45, 55, 0.9) !important;
             backdrop-filter: blur(15px);
@@ -151,6 +151,7 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="bi bi-database-fill-add me-2"></i>บันทึกข้อมูลใบเสร็จ</h2>
+        
         <a href="https://chaichana-dev-io.github.io/receipt-entry-system/index.html" class="btn-back-home">
             <i class="bi bi-house-door-fill"></i> กลับหน้าหลัก
         </a>
@@ -172,6 +173,7 @@
                 <input type="text" name="name" id="name" class="form-control" placeholder="ระบบจะดึงชื่ออัตโนมัติ">
             </div>
             <div class="col-md-3 mb-3 text-end">
+                
                 <div class="receipt-badge" onclick="location.href='https://chaichana-dev-io.github.io/receipt-entry-system/edit/index.html'" title="ไปที่หน้าออกใบเสร็จ">
                     <small>รหัสอ้างอิงใบเสร็จ</small>
                     <span id="receiptNoDisplay">- รอรันเลข -</span>
@@ -181,38 +183,10 @@
 
         <div class="section-title">1. ค่าส่วนกลาง</div>
         <div class="row align-items-end">
-            <div class="col-md-3 mb-3">
-                <label class="form-label">เดือนเริ่มต้น</label>
-                <select id="periodStart" class="form-select" onchange="calculate()">
-                    <option value="">- เลือกเดือน -</option>
-                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option>
-                    <option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option>
-                    <option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option>
-                    <option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option>
-                    <option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option>
-                    <option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label class="form-label">ถึงเดือน (ไม่บังคับ)</label>
-                <select id="periodEnd" class="form-select" onchange="calculate()">
-                    <option value="">- เลือกเดือน -</option>
-                    <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option>
-                    <option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option>
-                    <option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option>
-                    <option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option>
-                    <option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option>
-                    <option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label class="form-label">พื้นที่ (ตรม.)</label>
-                <input type="number" step="0.01" name="sqm" id="sqm" class="form-control" placeholder="0.00" oninput="calculate()">
-            </div>
-            <div class="col-md-3 mb-3">
-                <label class="form-label text-primary font-weight-bold">ค่าส่วนกลาง <span id="monthCountBadge" class="badge bg-secondary ms-1">0 เดือน</span></label>
-                <input type="number" name="commonFee" id="commonFee" class="form-control readonly-field" readonly tabindex="-1">
-            </div>
+            <div class="col-md-3 mb-3"><label class="form-label">เดือนเริ่มต้น</label><select id="periodStart" class="form-select" onchange="calculate()"><option value="">- เลือกเดือน -</option><option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option></select></div>
+            <div class="col-md-3 mb-3"><label class="form-label">ถึงเดือน (ไม่บังคับ)</label><select id="periodEnd" class="form-select" onchange="calculate()"><option value="">- เลือกเดือน -</option><option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option><option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option><option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option><option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option></select></div>
+            <div class="col-md-3 mb-3"><label class="form-label">พื้นที่ (ตรม.)</label><input type="number" step="0.01" name="sqm" id="sqm" class="form-control" placeholder="0.00" oninput="calculate()"></div>
+            <div class="col-md-3 mb-3"><label class="form-label text-primary font-weight-bold">ค่าส่วนกลาง <span id="monthCountBadge" class="badge bg-secondary ms-1">0 เดือน</span></label><input type="number" name="commonFee" id="commonFee" class="form-control readonly-field" readonly tabindex="-1"></div>
         </div>
 
         <div class="section-title">2. ค่าน้ำประปา</div>
@@ -230,7 +204,9 @@
         <div class="section-title">3. ค่าใช้จ่ายอื่นๆ และที่จอดรถ</div>
         <div class="row mb-3">
             <div class="col-md-2 mb-3"><label class="form-label small">มิเตอร์น้ำ/ขยะ</label><input type="number" name="meter" id="meter" class="form-control readonly-field" value="1" readonly tabindex="-1"></div>
-            <div class="col-md-2 mb-3"><label class="form-label small">จำนวนเงิน</label><input type="number" name="total_input" id="total_input" class="form-control readonly-field" value="20.00" readonly tabindex="-1"></div>
+            
+            <div class="col-md-2 mb-3"><label class="form-label small">จำนวนเงิน</label><input type="number" name="total_input" id="total_input" class="form-control readonly-field" value="40.00" readonly tabindex="-1"></div>
+            
             <div class="col-md-2 mb-3"><label class="form-label small">รถยนต์ (คัน)</label><input type="number" name="car" id="car" class="form-control" placeholder="0" oninput="calculate()"></div>
             <div class="col-md-2 mb-3"><label class="form-label small">รวมเงินจอดรถ</label><input type="number" name="sumCar" id="sumCar" class="form-control readonly-field" readonly tabindex="-1"></div>
             <div class="col-md-2 mb-3"><label class="form-label small">MC (คัน)</label><input type="number" name="mc" id="mc" class="form-control" placeholder="0" oninput="calculate()"></div>
@@ -258,9 +234,7 @@
                 <div class="form-check"><input class="form-check-input" type="radio" name="payType" id="p2" value="เงินโอน" onchange="togglePayFields()"><label class="form-check-label" for="p2"><i class="bi bi-bank"></i> เงินโอน</label></div>
                 <div class="form-check"><input class="form-check-input" type="radio" name="payType" id="p3" value="เช็ค" onchange="togglePayFields()"><label class="form-check-label" for="p3"><i class="bi bi-card-checklist"></i> เช็ค</label></div>
             </div>
-
             <div id="v_fields" style="display:none;" class="row justify-content-center"><div class="col-md-4"><label class="pay-label-gold">วันที่โอนเงิน</label><input type="date" name="transferDate" class="form-control"></div></div>
-
             <div id="w_fields" style="display:none;" class="row g-3">
                 <div class="col-md-3"><label class="pay-label-gold">ธนาคาร</label><input type="text" name="bankName" class="form-control"></div>
                 <div class="col-md-3"><label class="pay-label-gold">สาขา</label><input type="text" name="bankBranch" class="form-control"></div>
@@ -287,20 +261,13 @@
 <footer class="footer">© 2026 Charoen Krung Condominium 3 | บริหารจัดการโดยนิติบุคคล</footer>
 
 <script>
+    // 🛠️ คู่มือแก้ไข: ถ้าย้ายระบบไป Google Sheet ใหม่ ให้สร้าง Deploy ใหม่ แล้วนำ URL มาเปลี่ยนตรงนี้
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwjcA4Cc88COnMDbTmQgl1dBK9ZU2NsSPsLBnAzTmY0h7T6jUZLMg5znjcPSrAmJ62mDg/exec";
     const THAI_MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
 
-    // 🚀 Keyboard Shortcuts: Enter และ Escape
     document.addEventListener('keydown', (e) => {
-        // กด Enter ในช่องเลขห้องเพื่อดึงข้อมูล
-        if (e.key === "Enter" && document.activeElement.id === "room") {
-            e.preventDefault();
-            onRoomInput();
-        }
-        // กด Escape เพื่อล้างฟอร์ม
-        if (e.key === "Escape") {
-            clearForm();
-        }
+        if (e.key === "Enter" && document.activeElement.id === "room") { e.preventDefault(); onRoomInput(); }
+        if (e.key === "Escape") { clearForm(); }
     });
 
     function togglePayFields() {
@@ -357,11 +324,13 @@
         calculate();
     }
 
+    // 🛠️ คู่มือแก้ไข: พื้นที่คำนวณเงินทั้งหมด (เปลี่ยนเรทราคาที่ฟังก์ชันนี้)
     function calculate() {
         const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
         let monthCount = 0;
+        
         if (startM) {
             monthCount = 1;
             if (endM && startM !== endM) {
@@ -371,17 +340,25 @@
             }
         }
         document.getElementById('monthCountBadge').innerText = `${monthCount} เดือน`;
+        
+        // 🛠️ 1. ค่าส่วนกลาง: (พื้นที่ x ตัวคูณ) | ค่าเดิม 25 บาท/ตร.ม. เปลี่ยนตรงเลข 25 
         const commonFee = getVal('sqm') * 25 * monthCount;
         document.getElementById('commonFee').value = commonFee > 0 ? commonFee.toFixed(2) : "";
+        
+        // 🛠️ 2. ค่าน้ำประปา: (หน่วยที่ใช้ x เรท) | ค่าเดิม 18 บาท/หน่วย เปลี่ยนตรงเลข 18
         const unit = Math.max(0, getVal('currMeter') - getVal('prevMeter'));
         document.getElementById('waterUnit').value = unit > 0 ? unit : "";
         const waterFee = unit * 18;
         document.getElementById('waterFee').value = waterFee > 0 ? waterFee.toFixed(2) : "";
+        
+        // 🛠️ 3. ค่าจอดรถยนต์: (จำนวนคัน x เรท) | ค่าเดิม 500 บาท/คัน เปลี่ยนตรงเลข 500
         document.getElementById('sumCar').value = (getVal('car') * 500).toFixed(2);
+        
+        // 🛠️ 4. ค่ามอเตอร์ไซค์ (MC): (จำนวนคัน x เรท) | ค่าเดิม 100 บาท/คัน เปลี่ยนตรงเลข 100
         document.getElementById('sumMc').value = (getVal('mc') * 100).toFixed(2);
         
-        // 🚩 เปลี่ยนค่า 50 เป็น 40 ตามที่นายสั่งแล้วครับ
-        const total = commonFee + waterFee + (getVal('car') * 500) + (getVal('mc') * 100) + 20 + getVal('other');
+        // 🛠️ 5. ยอดรวมทั้งหมด (อย่าลืมเปลี่ยนค่า + 20 ให้ตรงกับหน้า HTML ถ้ามีการเปลี่ยนแปลงค่าขยะ/มิเตอร์)
+        const total = commonFee + waterFee + (getVal('car') * 500) + (getVal('mc') * 100) + 40 + getVal('other');
         
         document.getElementById('grandTotal').value = total > 0 ? total.toFixed(2) : "";
         document.getElementById('bahtText').value = total > 0 ? ThaiBahtText(total) : "";
@@ -406,10 +383,12 @@
             cancelButtonColor: 'rgba(255,255,255,0.1)'
         });
         if (!isConfirmed) return;
+        
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('loader').style.display = 'block';
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
+        
         try {
             const resp = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(data) });
             const res = await resp.json();
