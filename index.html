@@ -55,23 +55,49 @@
         
         .logo-wrapper {
             position: relative;
-            display: inline-block;
-            padding: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 30px;
+            border-radius: 30px;
             user-select: none;
             -webkit-user-select: none;
+            background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                0 18px 40px rgba(0,0,0,0.28);
+            overflow: hidden;
         }
 
+        /* แสงฟุ้งด้านหลังโลโก้ */
         .logo-wrapper::before {
             content: "";
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 120%; height: 120%;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
-            filter: blur(40px);
+            width: 145%;
+            height: 145%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.26) 0%, rgba(212, 175, 55, 0.10) 35%, transparent 72%);
+            filter: blur(42px);
             z-index: 0;
-            animation: pulseGlow 4s infinite alternate;
+            animation: pulseGlow 4.2s ease-in-out infinite alternate;
             pointer-events: none;
+        }
+
+        /* เส้นขอบทองบาง ๆ เพิ่มความหรู */
+        .logo-ring {
+            position: absolute;
+            inset: 10px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 215, 0, 0.10);
+            z-index: 1;
+            pointer-events: none;
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,0.015),
+                0 0 24px rgba(255, 215, 0, 0.06);
         }
 
         .logo-wrapper img {
@@ -79,7 +105,9 @@
             width: 100%;
             position: relative;
             z-index: 2;
-            filter: drop-shadow(0 15px 35px rgba(0,0,0,0.8));
+            filter:
+                drop-shadow(0 16px 32px rgba(0,0,0,0.72))
+                drop-shadow(0 0 16px rgba(255,215,0,0.08));
             user-select: none;
             -webkit-user-select: none;
             -webkit-user-drag: none;
@@ -87,33 +115,42 @@
             -webkit-touch-callout: none;
         }
 
+        /* เอฟเฟกต์แสงวิ่งแบบบางและสะอาด */
         .logo-wrapper::after {
             content: "";
             position: absolute;
-            top: 0; left: -100%;
-            width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transform: skewX(-25deg);
+            top: 0;
+            left: -120%;
+            width: 42%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+            transform: skewX(-22deg);
             z-index: 3;
-            animation: shine 5s infinite;
+            animation: shine 5.8s infinite;
             pointer-events: none;
         }
 
         @keyframes shine {
-            0% { left: -100%; }
-            20% { left: 200%; }
-            100% { left: 200%; }
+            0% { left: -120%; }
+            20% { left: 170%; }
+            100% { left: 170%; }
         }
 
         @keyframes pulseGlow {
-            from { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            from { 
+                opacity: 0.58; 
+                transform: translate(-50%, -50%) scale(0.94); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1.06); 
+            }
         }
 
         h1 {
             font-weight: 700;
             font-size: 2.2rem;
-            margin-top: 25px;
+            margin-top: 28px;
             background: linear-gradient(to bottom, #ffffff 40%, var(--gold-light) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -215,6 +252,81 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
+        .privacy-shield {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 8, 12, 0.96);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .privacy-shield.active {
+            display: flex;
+        }
+
+        .privacy-box {
+            max-width: 520px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            background: rgba(255,255,255,0.03);
+            border-radius: 24px;
+            padding: 28px 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .privacy-box i {
+            font-size: 2.2rem;
+            color: var(--gold-light);
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .privacy-box h3 {
+            margin: 0 0 10px;
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        .privacy-box p {
+            margin: 0;
+            color: #b8b8b8;
+            line-height: 1.7;
+            font-size: 0.98rem;
+        }
+
+        @media (max-width: 767.98px) {
+            .main-container {
+                padding: 42px 16px;
+            }
+
+            .logo-wrapper {
+                padding: 18px 18px;
+                border-radius: 22px;
+            }
+
+            .logo-ring {
+                inset: 8px;
+                border-radius: 16px;
+            }
+
+            .logo-wrapper img {
+                max-width: 250px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+                margin-top: 24px;
+            }
+
+            .subtitle {
+                font-size: 0.86rem;
+            }
+        }
+
         @media print {
             html, body {
                 background: #000 !important;
@@ -245,9 +357,18 @@
 </head>
 <body oncontextmenu="return false;">
 
+<div id="privacyShield" class="privacy-shield">
+    <div class="privacy-box">
+        <i class="bi bi-shield-lock-fill"></i>
+        <h3>Protected View</h3>
+        <p>หน้านี้ถูกซ่อนชั่วคราวเมื่อมีการเปลี่ยนแท็บหรือออกจากหน้า เพื่อช่วยลดการมองเห็นข้อมูลระหว่างใช้งาน</p>
+    </div>
+</div>
+
 <div class="main-container">
     <div class="header fade-in">
         <div class="logo-wrapper">
+            <div class="logo-ring"></div>
             <img
                 src="https://img1.pic.in.th/images/Untitled-designc951ab2c0c04b911.png"
                 alt="logo"
@@ -294,6 +415,16 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     (function () {
+        const privacyShield = document.getElementById('privacyShield');
+
+        function showShield() {
+            privacyShield.classList.add('active');
+        }
+
+        function hideShield() {
+            privacyShield.classList.remove('active');
+        }
+
         document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
         });
@@ -328,6 +459,30 @@
             }
         });
 
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                showShield();
+            } else {
+                hideShield();
+            }
+        });
+
+        window.addEventListener('blur', function () {
+            showShield();
+        });
+
+        window.addEventListener('focus', function () {
+            hideShield();
+        });
+
+        window.addEventListener('beforeprint', function () {
+            showShield();
+        });
+
+        window.addEventListener('afterprint', function () {
+            hideShield();
+        });
+
         const logo = document.querySelector('.logo-wrapper img');
         if (logo) {
             logo.setAttribute('draggable', 'false');
@@ -335,13 +490,6 @@
                 e.preventDefault();
             });
         }
-
-        window.addEventListener('beforeprint', function () {
-            document.body.style.visibility = 'hidden';
-            setTimeout(function () {
-                document.body.style.visibility = 'visible';
-            }, 1000);
-        });
     })();
 </script>
 </body>
