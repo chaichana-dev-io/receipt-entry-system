@@ -11,14 +11,21 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* 🛠️ คู่มือแก้ไข: การตั้งค่าสีธีม (เปลี่ยนรหัสสี Hex code ด้านล่างนี้) */
         :root {
-            --gold: #ffd700;       /* สีทองสว่าง */
-            --gold-dark: #d4af37;  /* สีทองเข้ม */
-            --gold-soft: rgba(255, 215, 0, 0.15); /* สีทองโปร่งแสง */
+            --gold: #ffd700;
+            --gold-dark: #d4af37;
+            --gold-soft: rgba(255, 215, 0, 0.15);
         }
 
-        /* 🔥 Premium Dark Theme Background */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Sarabun', sans-serif;
             min-height: 100vh;
@@ -27,6 +34,9 @@
             color: #fff;
             display: flex;
             flex-direction: column;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
 
         .container {
@@ -39,6 +49,8 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             flex: 1;
+            position: relative;
+            z-index: 2;
         }
 
         h2 {
@@ -58,7 +70,12 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: 0.3s;
         }
-        .btn-back-home:hover { color: var(--gold); border-color: var(--gold); transform: translateY(-2px); }
+
+        .btn-back-home:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
 
         .receipt-badge {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
@@ -70,9 +87,24 @@
             cursor: pointer;
             transition: 0.3s;
         }
-        .receipt-badge:hover { transform: scale(1.03); filter: brightness(1.1); }
-        .receipt-badge small { display: block; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
-        .receipt-badge span { display: block; font-weight: 800; font-size: 1.1rem; }
+
+        .receipt-badge:hover {
+            transform: scale(1.03);
+            filter: brightness(1.1);
+        }
+
+        .receipt-badge small {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .receipt-badge span {
+            display: block;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
 
         .section-title {
             background: rgba(255, 255, 255, 0.03);
@@ -91,14 +123,21 @@
             padding: 12px;
             border-radius: 12px;
         }
+
         .form-control:focus, .form-select:focus {
             background: rgba(255, 255, 255, 0.08);
             border-color: var(--gold);
             box-shadow: 0 0 12px var(--gold-soft);
             color: #fff;
         }
-        .form-control::placeholder { color: #666; }
-        select option { color: #000; }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+        select option {
+            color: #000;
+        }
 
         .readonly-field {
             background: rgba(0, 0, 0, 0.3) !important;
@@ -106,10 +145,22 @@
             font-weight: 700;
             border-color: rgba(255, 215, 0, 0.1) !important;
         }
-        .total-highlight { border-color: var(--gold) !important; }
 
-        .bg-inner-box { background: rgba(0, 0, 0, 0.15); border-radius: 18px; padding: 20px; border: 1px solid rgba(255,255,255,0.03); }
-        .text-muted-gold { color: #888; font-size: 0.85rem; }
+        .total-highlight {
+            border-color: var(--gold) !important;
+        }
+
+        .bg-inner-box {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 18px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .text-muted-gold {
+            color: #888;
+            font-size: 0.85rem;
+        }
 
         .btn-submit {
             padding: 18px;
@@ -122,7 +173,35 @@
             margin-top: 35px;
             box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2);
         }
-        .btn-submit:hover { filter: brightness(1.1); transform: translateY(-3px); }
+
+        .btn-submit:hover {
+            filter: brightness(1.1);
+            transform: translateY(-3px);
+        }
+
+        .pay-method-card {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 18px;
+            padding: 22px 20px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .pay-label-gold {
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: inline-block;
+        }
+
+        .form-check-input {
+            cursor: pointer;
+        }
+
+        .form-check-label {
+            cursor: pointer;
+            color: #f1f1f1;
+            font-weight: 600;
+        }
 
         .swal2-popup {
             background: rgba(40, 45, 55, 0.9) !important;
@@ -132,10 +211,28 @@
             border-radius: 25px !important;
             color: #fff !important;
         }
-        .swal2-title { color: var(--gold) !important; font-family: 'Sarabun', sans-serif !important; }
-        .swal2-html-container { color: #eee !important; }
-        .swal2-confirm { background: linear-gradient(135deg, var(--gold), #c9a400) !important; color: #000 !important; font-weight: 700 !important; border-radius: 12px !important; }
-        .swal2-cancel { background: rgba(255,255,255,0.1) !important; color: #fff !important; border-radius: 12px !important; }
+
+        .swal2-title {
+            color: var(--gold) !important;
+            font-family: 'Sarabun', sans-serif !important;
+        }
+
+        .swal2-html-container {
+            color: #eee !important;
+        }
+
+        .swal2-confirm {
+            background: linear-gradient(135deg, var(--gold), #c9a400) !important;
+            color: #000 !important;
+            font-weight: 700 !important;
+            border-radius: 12px !important;
+        }
+
+        .swal2-cancel {
+            background: rgba(255,255,255,0.1) !important;
+            color: #fff !important;
+            border-radius: 12px !important;
+        }
 
         .footer {
             text-align: center;
@@ -143,10 +240,93 @@
             font-size: 0.85rem;
             padding: 30px 0;
             margin-top: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .privacy-shield {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 8, 12, 0.96);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .privacy-shield.active {
+            display: flex;
+        }
+
+        .privacy-box {
+            max-width: 520px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            background: rgba(255,255,255,0.03);
+            border-radius: 24px;
+            padding: 28px 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .privacy-box i {
+            font-size: 2.2rem;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .privacy-box h3 {
+            margin: 0 0 10px;
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        .privacy-box p {
+            margin: 0;
+            color: #b8b8b8;
+            line-height: 1.7;
+            font-size: 0.98rem;
+        }
+
+        @media print {
+            html, body {
+                background: #000 !important;
+            }
+
+            body * {
+                visibility: hidden !important;
+            }
+
+            body::before {
+                content: "ไม่อนุญาตให้พิมพ์หรือบันทึกหน้านี้";
+                visibility: visible !important;
+                position: fixed;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 28px;
+                font-weight: 700;
+                text-align: center;
+                padding: 40px;
+                background: #000;
+                z-index: 99999;
+            }
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
+
+<div id="privacyShield" class="privacy-shield">
+    <div class="privacy-box">
+        <i class="bi bi-shield-lock-fill"></i>
+        <h3>Protected View</h3>
+        <p>หน้านี้ถูกซ่อนชั่วคราวเมื่อมีการเปลี่ยนแท็บหรือออกจากหน้า เพื่อช่วยลดการมองเห็นข้อมูลระหว่างใช้งาน</p>
+    </div>
+</div>
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -173,8 +353,7 @@
                 <input type="text" name="name" id="name" class="form-control" placeholder="ระบบจะดึงชื่ออัตโนมัติ">
             </div>
             <div class="col-md-3 mb-3 text-end">
-                
-                <div class="receipt-badge" onclick="location.href='https://chaichana-dev-io.github.io/receipt-entry-system/edit/index.html'" title="ไปที่หน้าออกใบเสร็จ">
+                <div class="receipt-badge" onclick="goToProtectedEditPage()" title="ไปที่หน้าออกใบเสร็จ">
                     <small>รหัสอ้างอิงใบเสร็จ</small>
                     <span id="receiptNoDisplay">- รอรันเลข -</span>
                 </div>
@@ -204,9 +383,7 @@
         <div class="section-title">3. ค่าใช้จ่ายอื่นๆ และที่จอดรถ</div>
         <div class="row mb-3">
             <div class="col-md-2 mb-3"><label class="form-label small">มิเตอร์น้ำ/ขยะ</label><input type="number" name="meter" id="meter" class="form-control readonly-field" value="1" readonly tabindex="-1"></div>
-            
             <div class="col-md-2 mb-3"><label class="form-label small">จำนวนเงิน</label><input type="number" name="total_input" id="total_input" class="form-control readonly-field" value="40.00" readonly tabindex="-1"></div>
-            
             <div class="col-md-2 mb-3"><label class="form-label small">รถยนต์ (คัน)</label><input type="number" name="car" id="car" class="form-control" placeholder="0" oninput="calculate()"></div>
             <div class="col-md-2 mb-3"><label class="form-label small">รวมเงินจอดรถ</label><input type="number" name="sumCar" id="sumCar" class="form-control readonly-field" readonly tabindex="-1"></div>
             <div class="col-md-2 mb-3"><label class="form-label small">MC (คัน)</label><input type="number" name="mc" id="mc" class="form-control" placeholder="0" oninput="calculate()"></div>
@@ -229,12 +406,17 @@
 
         <div class="section-title">4. วิธีการชำระเงิน</div>
         <div class="pay-method-card mb-4">
-            <div class="d-flex gap-5 justify-content-center mb-4">
+            <div class="d-flex gap-5 justify-content-center mb-4 flex-wrap">
                 <div class="form-check"><input class="form-check-input" type="radio" name="payType" id="p1" value="เงินสด" checked onchange="togglePayFields()"><label class="form-check-label" for="p1"><i class="bi bi-cash-stack"></i> เงินสด</label></div>
                 <div class="form-check"><input class="form-check-input" type="radio" name="payType" id="p2" value="เงินโอน" onchange="togglePayFields()"><label class="form-check-label" for="p2"><i class="bi bi-bank"></i> เงินโอน</label></div>
                 <div class="form-check"><input class="form-check-input" type="radio" name="payType" id="p3" value="เช็ค" onchange="togglePayFields()"><label class="form-check-label" for="p3"><i class="bi bi-card-checklist"></i> เช็ค</label></div>
             </div>
-            <div id="v_fields" style="display:none;" class="row justify-content-center"><div class="col-md-4"><label class="pay-label-gold">วันที่โอนเงิน</label><input type="date" name="transferDate" class="form-control"></div></div>
+            <div id="v_fields" style="display:none;" class="row justify-content-center">
+                <div class="col-md-4">
+                    <label class="pay-label-gold">วันที่โอนเงิน</label>
+                    <input type="date" name="transferDate" class="form-control">
+                </div>
+            </div>
             <div id="w_fields" style="display:none;" class="row g-3">
                 <div class="col-md-3"><label class="pay-label-gold">ธนาคาร</label><input type="text" name="bankName" class="form-control"></div>
                 <div class="col-md-3"><label class="pay-label-gold">สาขา</label><input type="text" name="bankBranch" class="form-control"></div>
@@ -255,19 +437,136 @@
 
         <button type="submit" id="submitBtn" class="btn btn-primary w-100 btn-submit"><i class="bi bi-cloud-upload-fill me-2"></i> บันทึกข้อมูลใบเสร็จ</button>
     </form>
-    <div id="loader" style="display:none;" class="text-center mt-4 text-warning fw-bold"><div class="spinner-border text-warning spinner-border-sm me-2"></div> กำลังบันทึกข้อมูล...</div>
+
+    <div id="loader" style="display:none;" class="text-center mt-4 text-warning fw-bold">
+        <div class="spinner-border text-warning spinner-border-sm me-2"></div> กำลังบันทึกข้อมูล...
+    </div>
 </div>
 
 <footer class="footer">© 2026 Charoen Krung Condominium 3 | บริหารจัดการโดยนิติบุคคล</footer>
 
 <script>
-    // 🛠️ คู่มือแก้ไข: ถ้าย้ายระบบไป Google Sheet ใหม่ ให้สร้าง Deploy ใหม่ แล้วนำ URL มาเปลี่ยนตรงนี้
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwjcA4Cc88COnMDbTmQgl1dBK9ZU2NsSPsLBnAzTmY0h7T6jUZLMg5znjcPSrAmJ62mDg/exec";
     const THAI_MONTHS = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+    const PROTECTED_EDIT_URL = "https://chaichana-dev-io.github.io/receipt-entry-system/edit/index.html";
+    const PROTECTED_EDIT_PASSWORD = "Aa1234";
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === "Enter" && document.activeElement.id === "room") { e.preventDefault(); onRoomInput(); }
-        if (e.key === "Escape") { clearForm(); }
+    const privacyShield = document.getElementById('privacyShield');
+
+    function showShield() {
+        privacyShield.classList.add('active');
+    }
+
+    function hideShield() {
+        privacyShield.classList.remove('active');
+    }
+
+    async function goToProtectedEditPage() {
+        const result = await Swal.fire({
+            title: 'ยืนยันรหัสผ่าน',
+            text: 'กรอกรหัสผ่านก่อนเข้าสู่หน้าแก้ไข/ออกใบเสร็จ',
+            input: 'password',
+            inputPlaceholder: 'กรอกรหัสผ่าน',
+            inputAttributes: {
+                autocapitalize: 'off',
+                autocorrect: 'off',
+                autocomplete: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#d4af37',
+            cancelButtonColor: 'rgba(255,255,255,0.1)',
+            preConfirm: (value) => {
+                if (!value) {
+                    Swal.showValidationMessage('กรุณากรอกรหัสผ่าน');
+                    return false;
+                }
+                return value;
+            }
+        });
+
+        if (!result.isConfirmed) return;
+
+        if (result.value === PROTECTED_EDIT_PASSWORD) {
+            window.location.href = PROTECTED_EDIT_URL;
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'รหัสผ่านไม่ถูกต้อง',
+                text: 'ไม่สามารถเข้าสู่หน้านี้ได้',
+                confirmButtonColor: '#d4af37'
+            });
+        }
+    }
+
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('dragstart', function (e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('selectstart', function (e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('copy', function (e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('cut', function (e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        const key = e.key ? e.key.toLowerCase() : '';
+
+        if (e.key === "Enter" && document.activeElement.id === "room") {
+            e.preventDefault();
+            onRoomInput();
+            return;
+        }
+
+        if (e.key === "Escape") {
+            clearForm();
+            return;
+        }
+
+        if (
+            e.keyCode === 123 ||
+            (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) ||
+            (e.ctrlKey && (key === 's' || key === 'u' || key === 'p')) ||
+            ((e.metaKey || e.ctrlKey) && (key === 's' || key === 'p'))
+        ) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            showShield();
+        } else {
+            hideShield();
+        }
+    });
+
+    window.addEventListener('blur', function () {
+        showShield();
+    });
+
+    window.addEventListener('focus', function () {
+        hideShield();
+    });
+
+    window.addEventListener('beforeprint', function () {
+        showShield();
+    });
+
+    window.addEventListener('afterprint', function () {
+        hideShield();
     });
 
     function togglePayFields() {
@@ -282,12 +581,14 @@
         let t1 = ["ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
         let t2 = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"];
         let res = "";
+
         function read(n) {
             let s = "";
             for (let i = 0; i < n.length; i++) {
-                let d = parseInt(n[i]); let p = n.length - i - 1;
+                let d = parseInt(n[i]);
+                let p = n.length - i - 1;
                 if (d !== 0) {
-                    if (p % 6 === 1 && d === 1) s += "เอ็ด"; 
+                    if (p % 6 === 1 && d === 1) s += "เอ็ด";
                     else if (p % 6 === 1 && d === 2) s += "ยี่";
                     else if (p % 6 === 0 && d === 1 && i > 0 && n.length > 1) s += "เอ็ด";
                     else s += t1[d];
@@ -297,6 +598,7 @@
             }
             return s;
         }
+
         res = (num[0] === "0") ? "ศูนย์บาท" : read(num[0]) + "บาท";
         res += (num[1] === "00") ? "ถ้วน" : read(num[1]) + "สตางค์";
         return res.replace("หนึ่งสิบ", "สิบ");
@@ -305,12 +607,15 @@
     async function onRoomInput() {
         const room = document.getElementById('room').value;
         if (!room) return;
+
         document.getElementById('receiptNoDisplay').innerText = "เลขที่ใบเสร็จ...";
+
         try {
             const [roomRes, receiptRes] = await Promise.all([
-                fetch(`${WEB_APP_URL}?action=getRoomData&room=${room}`).then(res => res.json()),
-                fetch(`${WEB_APP_URL}?action=getReceiptNo&room=${room}`).then(res => res.text())
+                fetch(`${WEB_APP_URL}?action=getRoomData&room=${encodeURIComponent(room)}`).then(res => res.json()),
+                fetch(`${WEB_APP_URL}?action=getReceiptNo&room=${encodeURIComponent(room)}`).then(res => res.text())
             ]);
+
             if (roomRes.found) {
                 document.getElementById('name').value = roomRes.name;
                 document.getElementById('sqm').value = roomRes.sqm;
@@ -318,19 +623,22 @@
                 document.getElementById('name').value = "";
                 document.getElementById('name').placeholder = "ไม่พบข้อมูล กรุณาระบุชื่อ";
             }
+
             document.getElementById('receiptNo').value = receiptRes;
             document.getElementById('receiptNoDisplay').innerText = receiptRes;
-        } catch (e) { document.getElementById('receiptNoDisplay').innerText = "ERROR"; }
+        } catch (e) {
+            document.getElementById('receiptNoDisplay').innerText = "ERROR";
+        }
+
         calculate();
     }
 
-    // 🛠️ คู่มือแก้ไข: พื้นที่คำนวณเงินทั้งหมด (เปลี่ยนเรทราคาที่ฟังก์ชันนี้)
     function calculate() {
         const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
         const startM = document.getElementById('periodStart').value;
         const endM = document.getElementById('periodEnd').value;
         let monthCount = 0;
-        
+
         if (startM) {
             monthCount = 1;
             if (endM && startM !== endM) {
@@ -339,27 +647,22 @@
                 monthCount = e >= s ? (e - s) + 1 : (12 - s + e) + 1;
             }
         }
+
         document.getElementById('monthCountBadge').innerText = `${monthCount} เดือน`;
-        
-        // 🛠️ 1. ค่าส่วนกลาง: (พื้นที่ x ตัวคูณ) | ค่าเดิม 25 บาท/ตร.ม. เปลี่ยนตรงเลข 25 
+
         const commonFee = getVal('sqm') * 25 * monthCount;
         document.getElementById('commonFee').value = commonFee > 0 ? commonFee.toFixed(2) : "";
-        
-        // 🛠️ 2. ค่าน้ำประปา: (หน่วยที่ใช้ x เรท) | ค่าเดิม 18 บาท/หน่วย เปลี่ยนตรงเลข 18
+
         const unit = Math.max(0, getVal('currMeter') - getVal('prevMeter'));
         document.getElementById('waterUnit').value = unit > 0 ? unit : "";
         const waterFee = unit * 18;
         document.getElementById('waterFee').value = waterFee > 0 ? waterFee.toFixed(2) : "";
-        
-        // 🛠️ 3. ค่าจอดรถยนต์: (จำนวนคัน x เรท) | ค่าเดิม 500 บาท/คัน เปลี่ยนตรงเลข 500
+
         document.getElementById('sumCar').value = (getVal('car') * 500).toFixed(2);
-        
-        // 🛠️ 4. ค่ามอเตอร์ไซค์ (MC): (จำนวนคัน x เรท) | ค่าเดิม 100 บาท/คัน เปลี่ยนตรงเลข 100
         document.getElementById('sumMc').value = (getVal('mc') * 100).toFixed(2);
-        
-        // 🛠️ 5. ยอดรวมทั้งหมด (อย่าลืมเปลี่ยนค่า + 20 ให้ตรงกับหน้า HTML ถ้ามีการเปลี่ยนแปลงค่าขยะ/มิเตอร์)
+
         const total = commonFee + waterFee + (getVal('car') * 500) + (getVal('mc') * 100) + 40 + getVal('other');
-        
+
         document.getElementById('grandTotal').value = total > 0 ? total.toFixed(2) : "";
         document.getElementById('bahtText').value = total > 0 ? ThaiBahtText(total) : "";
         document.getElementById('finalPeriod').value = (monthCount > 1) ? `${startM} - ${endM}` : startM;
@@ -369,41 +672,75 @@
         document.getElementById('receiptForm').reset();
         document.getElementById('receiptNoDisplay').innerText = "- รอรันเลข -";
         document.getElementById('monthCountBadge').innerText = "0 เดือน";
+        document.getElementById('commonFee').value = "";
+        document.getElementById('waterUnit').value = "";
+        document.getElementById('waterFee').value = "";
+        document.getElementById('sumCar').value = "";
+        document.getElementById('sumMc').value = "";
+        document.getElementById('grandTotal').value = "";
+        document.getElementById('bahtText').value = "";
+        document.getElementById('name').placeholder = "ระบบจะดึงชื่ออัตโนมัติ";
         togglePayFields();
     }
 
     document.getElementById('receiptForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const { isConfirmed } = await Swal.fire({ 
-            title: 'ยืนยันการบันทึก?', 
-            text: "ข้อมูลจะถูกส่งเข้าฐานข้อมูลทันที",
-            icon: 'question', 
+
+        const { isConfirmed } = await Swal.fire({
+            title: 'ยืนยันการบันทึก?',
+            text: 'ข้อมูลจะถูกส่งเข้าฐานข้อมูลทันที',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#d4af37',
             cancelButtonColor: 'rgba(255,255,255,0.1)'
         });
+
         if (!isConfirmed) return;
-        
+
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('loader').style.display = 'block';
+
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
-        
+
         try {
-            const resp = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(data) });
+            const resp = await fetch(WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify(data)
+            });
             const res = await resp.json();
+
             if (res.result === "success") {
-                Swal.fire({ title: 'สำเร็จ!', text: 'บันทึกข้อมูลเรียบร้อยแล้ว', icon: 'success', confirmButtonColor: '#d4af37' });
+                Swal.fire({
+                    title: 'สำเร็จ!',
+                    text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                    icon: 'success',
+                    confirmButtonColor: '#d4af37'
+                });
                 clearForm();
+            } else {
+                Swal.fire({
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถบันทึกข้อมูลได้',
+                    icon: 'error',
+                    confirmButtonColor: '#d4af37'
+                });
             }
         } catch (error) {
-            Swal.fire({ title: 'สำเร็จ', text: 'บันทึกเรียบร้อย', icon: 'success', confirmButtonColor: '#d4af37' });
+            Swal.fire({
+                title: 'สำเร็จ',
+                text: 'บันทึกเรียบร้อย',
+                icon: 'success',
+                confirmButtonColor: '#d4af37'
+            });
             clearForm();
         } finally {
             document.getElementById('submitBtn').disabled = false;
             document.getElementById('loader').style.display = 'none';
         }
     });
+
+    togglePayFields();
 </script>
 </body>
 </html>
