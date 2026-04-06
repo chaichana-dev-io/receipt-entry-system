@@ -15,6 +15,15 @@
             --dark-bg: #0a0c10;
         }
 
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Sarabun', sans-serif;
             min-height: 100vh;
@@ -22,7 +31,10 @@
             background: radial-gradient(circle at top, #1c2029, #0a0c10 80%);
             color: #fff;
             display: flex;
-            flex-direction: column; /* เพื่อให้ดัน Footer ลงล่างได้ */
+            flex-direction: column;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
 
         .main-container { 
@@ -31,18 +43,24 @@
             margin: auto; 
             padding: 60px 20px; 
             width: 100%;
+            position: relative;
+            z-index: 2;
         }
 
-        /* --- LOGO SPOTLIGHT TECHNIQUE --- */
-        .header { text-align: center; margin-bottom: 70px; position: relative; }
+        .header {
+            text-align: center;
+            margin-bottom: 70px;
+            position: relative;
+        }
         
         .logo-wrapper {
             position: relative;
             display: inline-block;
             padding: 20px;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        /* รัศมีเรืองแสงหลังโลโก้ */
         .logo-wrapper::before {
             content: "";
             position: absolute;
@@ -53,6 +71,7 @@
             filter: blur(40px);
             z-index: 0;
             animation: pulseGlow 4s infinite alternate;
+            pointer-events: none;
         }
 
         .logo-wrapper img {
@@ -60,11 +79,14 @@
             width: 100%;
             position: relative;
             z-index: 2;
-            /* เงาคมๆ ให้โลโก้ลอยออกมา */
             filter: drop-shadow(0 15px 35px rgba(0,0,0,0.8));
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+            -webkit-touch-callout: none;
         }
 
-        /* เอฟเฟกต์แสงวิ่งผ่านโลโก้ (Shine) */
         .logo-wrapper::after {
             content: "";
             position: absolute;
@@ -74,6 +96,7 @@
             transform: skewX(-25deg);
             z-index: 3;
             animation: shine 5s infinite;
+            pointer-events: none;
         }
 
         @keyframes shine {
@@ -88,16 +111,22 @@
         }
 
         h1 {
-            font-weight: 700; font-size: 2.2rem; margin-top: 25px;
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-top: 25px;
             background: linear-gradient(to bottom, #ffffff 40%, var(--gold-light) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             letter-spacing: 1px;
             text-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        .subtitle { color: #888; letter-spacing: 2px; font-weight: 300; }
+        .subtitle {
+            color: #888;
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
 
-        /* --- CARDS DESIGN --- */
         .menu-card {
             border-radius: 26px;
             padding: 45px 30px;
@@ -112,6 +141,7 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.4);
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             position: relative;
+            overflow: hidden;
         }
 
         .menu-card:hover {
@@ -122,8 +152,12 @@
         }
 
         .icon-circle {
-            width: 90px; height: 90px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 0 auto 25px;
             font-size: 2.6rem;
             background: linear-gradient(135deg, #222, #000);
@@ -139,22 +173,40 @@
             box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
         }
 
-        .card-title { font-weight: 700; font-size: 1.4rem; margin-bottom: 12px; color: #fff; }
-        .card-desc { color: #aaa; font-size: 0.95rem; line-height: 1.6; transition: 0.3s; }
-        .menu-card:hover .card-desc { color: #ddd; }
+        .card-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #fff;
+        }
 
-        /* --- FOOTER (สีเทา อยู่ล่างสุด) --- */
+        .card-desc {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            transition: 0.3s;
+        }
+
+        .menu-card:hover .card-desc {
+            color: #ddd;
+        }
+
         .footer {
             text-align: center;
             padding: 30px 20px;
-            color: #666; /* สีเทาตามสั่ง */
+            color: #666;
             font-size: 0.85rem;
             letter-spacing: 1px;
             background: transparent;
+            position: relative;
+            z-index: 2;
         }
 
-        /* Animation */
-        .fade-in { animation: fadeInUp 0.8s ease forwards; opacity: 0; }
+        .fade-in {
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
         .delay-1 { animation-delay: 0.2s; }
         .delay-2 { animation-delay: 0.4s; }
 
@@ -162,14 +214,47 @@
             from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+
+        @media print {
+            html, body {
+                background: #000 !important;
+            }
+
+            body * {
+                visibility: hidden !important;
+            }
+
+            body::before {
+                content: "ไม่อนุญาตให้พิมพ์หรือบันทึกหน้านี้";
+                visibility: visible !important;
+                position: fixed;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 28px;
+                font-weight: 700;
+                text-align: center;
+                padding: 40px;
+                background: #000;
+                z-index: 99999;
+            }
+        }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
 <div class="main-container">
     <div class="header fade-in">
         <div class="logo-wrapper">
-            <img src="https://img1.pic.in.th/images/Untitled-designc951ab2c0c04b911.png" alt="logo">
+            <img
+                src="https://img1.pic.in.th/images/Untitled-designc951ab2c0c04b911.png"
+                alt="logo"
+                draggable="false"
+                ondragstart="return false;"
+                oncontextmenu="return false;"
+            >
         </div>
         <h1>CHAROEN KRUNG CONDOMINIUM 3</h1>
         <p class="subtitle text-uppercase">Receipt Management System</p>
@@ -207,5 +292,57 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    (function () {
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('dragstart', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('selectstart', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('copy', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('cut', function (e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            const key = e.key ? e.key.toLowerCase() : '';
+
+            if (
+                e.keyCode === 123 ||
+                (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) ||
+                (e.ctrlKey && (key === 's' || key === 'u' || key === 'p')) ||
+                ((e.metaKey || e.ctrlKey) && (key === 's' || key === 'p'))
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        const logo = document.querySelector('.logo-wrapper img');
+        if (logo) {
+            logo.setAttribute('draggable', 'false');
+            logo.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+            });
+        }
+
+        window.addEventListener('beforeprint', function () {
+            document.body.style.visibility = 'hidden';
+            setTimeout(function () {
+                document.body.style.visibility = 'visible';
+            }, 1000);
+        });
+    })();
+</script>
 </body>
 </html>
